@@ -1,7 +1,7 @@
 import { LuLayers } from "react-icons/lu";
 import { FaUserGroup } from "react-icons/fa6";
 import { IoMailSharp } from "react-icons/io5";
-import { IoSettingsOutline } from "react-icons/io5";
+// import { IoSettingsOutline } from "react-icons/io5";
 
 
 const sidePortals = [
@@ -20,11 +20,11 @@ const sidePortals = [
     link: "/dashboard/newsletter",
     icon: IoMailSharp,
   },
-  {
-    tabName: "Settings",
-    link: "/dashboard/setting",
-    icon: IoSettingsOutline,
-  },
+  // {
+  //   tabName: "Settings",
+  //   link: "/dashboard/setting",
+  //   icon: IoSettingsOutline,
+  // },
 ];
 
 export default sidePortals;

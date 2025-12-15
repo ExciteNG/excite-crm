@@ -1,11 +1,17 @@
+'use client'
 import React from 'react';
+import { usePathname } from 'next/navigation';
 import { Pagination,PaginationContent,PaginationItem,PaginationLink,PaginationNext,PaginationPrevious,PaginationEllipsis } from '../ui/pagination';
 
 const FootPagination = () => {
+  const pathName = usePathname();
+  //The display condition
+  const displayCondition = pathName === '/dashboard/newsletter' ||
+    pathName === "/dashboard/setting";
   return (
-    <div className='h-full'>
+    <div className={`h-full ${displayCondition && 'hidden'} flex items-center bg-inherit`}>
       <Pagination className=''>
-        <PaginationContent>
+        <PaginationContent className=''>
           <PaginationItem>
             <PaginationPrevious />
           </PaginationItem>

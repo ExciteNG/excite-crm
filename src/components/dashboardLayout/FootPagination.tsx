@@ -9,9 +9,9 @@ const FootPagination = () => {
   const displayCondition = pathName === '/dashboard/newsletter' ||
     pathName === "/dashboard/setting";
   return (
-    <div className={`h-full ${displayCondition && 'hidden'}`}>
+    <div className={`h-full ${displayCondition && 'hidden'} flex items-center bg-inherit`}>
       <Pagination className=''>
-        <PaginationContent>
+        <PaginationContent className=''>
           <PaginationItem>
             <PaginationPrevious />
           </PaginationItem>

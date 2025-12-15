@@ -1,8 +1,11 @@
-import React from 'react'
+import React from 'react';
+import Overview from '@/src/components/dashboardUI/Overview';
 
 const page = () => {
   return (
-    <div>Overview</div>
+    <section>
+      <Overview/>
+    </section>
   )
 }
 

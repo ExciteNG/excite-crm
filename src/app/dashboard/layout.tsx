@@ -23,8 +23,8 @@ export default function DashboardLayout({
           <nav className="h-12 border w-full">
             <Header />
           </nav>
-          <section className={`antialiased h-[calc(100vh-96px)]`}>{children}</section>
-          <footer className="h-12">
+          <section className={`antialiased h-[calc(100vh-96px)] overflow-y-auto px-4 pb-4 bg-slate-100/65`}>{children}</section>
+          <footer className="h-12 bg-white">
             <FootPagination />
           </footer>
         </section>

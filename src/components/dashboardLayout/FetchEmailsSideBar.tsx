@@ -316,7 +316,7 @@ export default function FetchEmailsSideBar({
         type="text"
         id="email"
         placeholder="Search Email..."
-        className="border w-full p-1 rounded-sm"
+        className="border w-full px-2.5 py-1.5 rounded-sm placeholder:text-sm focus:outline-none"
         onChange={searchEmail}
       />
       <Select

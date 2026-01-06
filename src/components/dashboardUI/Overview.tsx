@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import DashCard from "./reusableComponents/DashCard";
 import { HiMiniUserGroup } from "react-icons/hi2";
@@ -25,8 +27,15 @@ import {
 } from "../ui/select";
 import { Label } from "../ui/label";
 import StatusTag from "./reusableComponents/StatusTag";
+import { useReactQuery } from "@/src/services/apiHelper";
 
 const Overview = () => {
+  // const { data, isLoading, error } = useReactQuery(
+  //   ["users"],
+  //   "/user/excite-users"
+  // );
+  // console.log(data);
+
   return (
     <section className="space-y-7">
       <div className="grid grid-cols-3 gap-5 sticky top-0 z-20 bg-slate-100/65 py-4">

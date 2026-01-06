@@ -1,4 +1,4 @@
-import { MessageCircle, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageCircle, Users } from "lucide-react";
 import React from "react";
 const users = [
   {
@@ -140,26 +140,24 @@ const AllUsers = () => {
       </div>
 
       {/* Pagination */}
-      {/* <div className="flex justify-center items-center gap-2 mt-6">
-          <button className="p-2 rounded-lg border">
-            <ChevronLeft size={16} />
+      {/*  <div className="flex justify-center items-center gap-2 mt-6">
+        <button className="p-2 rounded-lg border">
+          <ChevronLeft size={16} />
+        </button>
+        {[1, 2, 3, 4, 5].map((page) => (
+          <button
+            key={page}
+            className={`w-9 h-9 rounded-lg text-sm font-medium ${
+              page === 1 ? "bg-yellow-400 text-black" : "border hover:bg-muted"
+            }`}
+          >
+            {page}
           </button>
-          {[1, 2, 3, 4, 5].map((page) => (
-            <button
-              key={page}
-              className={`w-9 h-9 rounded-lg text-sm font-medium ${
-                page === 1
-                  ? "bg-yellow-400 text-black"
-                  : "border hover:bg-muted"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button className="p-2 rounded-lg border">
-            <ChevronRight size={16} />
-          </button>
-        </div> */}
+        ))}
+        <button className="p-2 rounded-lg border">
+          <ChevronRight size={16} />
+        </button>
+      </div> */}
     </div>
   );
 };

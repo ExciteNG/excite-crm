@@ -1,12 +1,11 @@
-import React from 'react';
-import Overview from '@/src/components/dashboardUI/Overview';
+import Overview from "@/src/components/dashboardUI/Overview";
 
 const page = () => {
   return (
     <section>
-      <Overview/>
+      <Overview />
     </section>
-  )
-}
+  );
+};
 
-export default page
+export default page;

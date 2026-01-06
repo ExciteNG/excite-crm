@@ -1,3 +1,22 @@
+export type QueryMethod = "post" | "put" | "patch" | "delete";
+
+export interface ApiResponseSuccess<T> {
+  status: string;
+  success: boolean;
+  message: string;
+  data: T | null;
+  doc: T | null;
+  payload: T | null;
+  token?: string;
+}
+
+export interface ApiResponseError {
+  status: string;
+  success: boolean;
+  message: string;
+  data: null;
+}
+
 export interface BaseResponse<T> {
   data: T;
   totalPages?: number;

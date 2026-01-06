@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import React from "react";
 import DashCard from "./reusableComponents/DashCard";
@@ -27,7 +27,8 @@ import {
 } from "../ui/select";
 import { Label } from "../ui/label";
 import StatusTag from "./reusableComponents/StatusTag";
-import { useReactQuery } from "@/src/services/apiHelper";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+// import { useReactQuery } from "@/src/services/apiHelper";
 
 const Overview = () => {
   // const { data, isLoading, error } = useReactQuery(
@@ -38,24 +39,24 @@ const Overview = () => {
 
   return (
     <section className="space-y-7">
-      <div className="grid grid-cols-3 gap-5 sticky top-0 z-20 bg-slate-100/65 py-4">
+      <div className="grid grid-cols-3 gap-5 bg-slate-100/65 py-4">
         <DashCard
           Icon={HiMiniUserGroup}
-          title={"Total User's"}
+          title={"total users"}
           matrix={123}
           iconBg="bg-[#EDF9FF]"
           iconColor="text-[#12A6F0]"
         />
         <DashCard
           Icon={HiMiniUsers}
-          title={"Active User's"}
+          title={"active users"}
           matrix={40}
           iconBg="bg-[#E6FFF2]"
           iconColor="text-[#00AA4F]"
         />
         <DashCard
           Icon={MdGroupAdd}
-          title={"Leads"}
+          title={"leads"}
           matrix={50}
           iconBg="bg-[#FEF3F2]"
           iconColor="text-[#E7000B]"
@@ -69,12 +70,11 @@ const Overview = () => {
           <ChartPieInteractive />
         </div>
       </article>
-      <section className="h-fit bg-white border rounded-md shadow">
-        <div className="p-5">
+      <section className="h-fit px-5 border rounded-md shadow">
+        <div className="p-8 divide-solid divide-[#EFEFF0] divide-y-2">
           <p className="text-slate-700 font-semibold ">Recent Leads</p>
-          <hr className="py-1" />
-          <div className="w-full flex flex-col items-end gap-1">
-            <Label className="w-[180px]"> Filter by Status</Label>
+          <div className="w-full flex flex-col items-end gap-1 mt-5">
+            <Label className="w-[180px]">Filter by Status</Label>
             <Select>
               <SelectTrigger
                 className="ml-auto h-7 w-[180px] rounded-lg pl-2.5"
@@ -85,14 +85,9 @@ const Overview = () => {
               <SelectContent align="end" className="rounded-xl">
                 {tableContent.map((status, key) => {
                   return (
-                    <div key={key}>
-                      <SelectItem
-                        value={status.status}
-                        className="rounded-lg [&_span]:flex"
-                      >
-                        <div className="flex items-center gap-2 text-xs">
-                          {status.status}
-                        </div>
+                    <div key={key} className="capitalize">
+                      <SelectItem value={status.status}>
+                        {status.status}
                       </SelectItem>
                       {/* <SelectSeparator /> */}
                     </div>
@@ -102,29 +97,43 @@ const Overview = () => {
             </Select>
           </div>
         </div>
-        <div className="max-h-[500px] overflow-auto">
+        <div className="max-h-[500px] p-8 overflow-auto">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="text-center">Full Name</TableHead>
-                <TableHead className="text-center">Email</TableHead>
-                <TableHead className="text-center">Phone Number</TableHead>
-                <TableHead className="text-center">Location</TableHead>
-                <TableHead className="text-center">Source</TableHead>
-                <TableHead className="text-center">Registered Date</TableHead>
-                <TableHead className="text-center">Status</TableHead>
+              <TableRow className="bg-[#EFEFF0]/45">
+                <TableHead className="text-center font-semibold text-[#4F4F4F">
+                  Full Name
+                </TableHead>
+                <TableHead className="text-center text-[#4F4F4F">
+                  Email
+                </TableHead>
+                <TableHead className="text-center text-[#4F4F4F">
+                  Phone Number
+                </TableHead>
+                <TableHead className="text-center text-[#4F4F4F">
+                  Location
+                </TableHead>
+                <TableHead className="text-center text-[#4F4F4F">
+                  Source
+                </TableHead>
+                <TableHead className="text-center text-[#4F4F4F">
+                  Registered Date
+                </TableHead>
+                <TableHead className="text-[#4F4F4F">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {tableContent.map((row, index) => {
                 return (
-                  <TableRow key={index} className="text-center h-16">
-                    <TableCell>{row.name}</TableCell>
-                    <TableCell>{row.email}</TableCell>
-                    <TableCell>{row.phone}</TableCell>
-                    <TableCell>{row.location}</TableCell>
-                    <TableCell>{row.source}</TableCell>
-                    <TableCell>{row.date}</TableCell>
+                  <TableRow key={index} className="h-16">
+                    <TableCell className="text-center">{row.name}</TableCell>
+                    <TableCell className="text-center">{row.email}</TableCell>
+                    <TableCell className="text-center">{row.phone}</TableCell>
+                    <TableCell className="text-center">
+                      {row.location}
+                    </TableCell>
+                    <TableCell className="text-center">{row.source}</TableCell>
+                    <TableCell className="text-center">{row.date}</TableCell>
                     <TableCell>
                       <StatusTag status={row.status} />
                     </TableCell>
@@ -135,6 +144,26 @@ const Overview = () => {
           </Table>
         </div>
       </section>
+
+      {/* pagination */}
+      <div className="flex justify-center items-center gap-2 mt-6">
+        <button className="p-2 rounded-lg border">
+          <ChevronLeft size={16} />
+        </button>
+        {[1, 2].map((page) => (
+          <button
+            key={page}
+            className={`w-9 h-9 rounded-lg text-sm font-medium ${
+              page === 1 ? "bg-yellow-400 text-black" : "border hover:bg-muted"
+            }`}
+          >
+            {page}
+          </button>
+        ))}
+        <button className="p-2 rounded-lg border">
+          <ChevronRight size={16} />
+        </button>
+      </div>
     </section>
   );
 };

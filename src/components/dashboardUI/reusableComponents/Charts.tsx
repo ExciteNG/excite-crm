@@ -28,7 +28,6 @@ import {
 } from "@/src/components/ui/select";
 import { GoDotFill } from "react-icons/go";
 
-
 export const description = "A bar chart";
 
 const chartData = [
@@ -47,61 +46,57 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-
 export function ChartBarDefault() {
-const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
+  const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
 
-    const pieChartConfig = {
-      visitors: {
-        label: "Visitors",
-      },
-      desktop: {
-        label: "Desktop",
-      },
-      mobile: {
-        label: "Mobile",
-      },
-      january: {
-        label: "January",
-        color: "var(--chart-1)",
-      },
-      february: {
-        label: "February",
-        color: "var(--chart-2)",
-      },
-      march: {
-        label: "March",
-        color: "var(--chart-3)",
-      },
-      april: {
-        label: "April",
-        color: "var(--chart-4)",
-      },
-      may: {
-        label: "May",
-        color: "var(--chart-5)",
-      },
-    } satisfies ChartConfig;
+  const pieChartConfig = {
+    visitors: {
+      label: "Visitors",
+    },
+    desktop: {
+      label: "Desktop",
+    },
+    mobile: {
+      label: "Mobile",
+    },
+    january: {
+      label: "January",
+      color: "var(--chart-1)",
+    },
+    february: {
+      label: "February",
+      color: "var(--chart-2)",
+    },
+    march: {
+      label: "March",
+      color: "var(--chart-3)",
+    },
+    april: {
+      label: "April",
+      color: "var(--chart-4)",
+    },
+    may: {
+      label: "May",
+      color: "var(--chart-5)",
+    },
+  } satisfies ChartConfig;
 
-    const months = React.useMemo(
-      () => desktopData.map((item) => item.month),
-      []
-    );
+  const months = React.useMemo(() => desktopData.map((item) => item.month), []);
   return (
-    <Card className='w-full'>
+    <Card className="w-full">
       <CardHeader className="flex justify-between items-center">
-        <div>
-          <CardTitle>Monthly Signups</CardTitle>
+        <div className="space-y-1.5">
+          <CardTitle>Monthly Sign-ups</CardTitle>
           <CardDescription>Signup breakdown</CardDescription>
         </div>
         <Select value={activeMonth} onValueChange={setActiveMonth}>
           <SelectTrigger
-            className='ml-auto h-7 w-[130px] rounded-lg pl-2.5'
-            aria-label='Select a value'
+            className="ml-auto h-7 w-[130px] rounded-lg pl-2.5"
+            aria-label="Select a value"
           >
-            <SelectValue placeholder='Select month' />
+            <SelectValue placeholder="Select month" />
           </SelectTrigger>
-          <SelectContent align='end' className='rounded-xl'>
+          <SelectContent align="end">
             {months.map((key) => {
               const config = pieChartConfig[key as keyof typeof pieChartConfig];
 
@@ -113,11 +108,11 @@ const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
                 <SelectItem
                   key={key}
                   value={key}
-                  className='rounded-lg [&_span]:flex'
+                  className="rounded-lg [&_span]:flex"
                 >
-                  <div className='flex items-center gap-2 text-xs'>
+                  <div className="flex items-center gap-2 text-xs">
                     <span
-                      className='flex h-3 w-3 shrink-0 rounded-xs'
+                      className="flex h-3 w-3 shrink-0 rounded-xs"
                       style={{
                         backgroundColor: `var(--color-${key})`,
                       }}
@@ -130,12 +125,12 @@ const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className='w-full'>
-        <ChartContainer config={chartConfig} className='h-[200px] w-full'>
+      <CardContent className="w-full">
+        <ChartContainer config={chartConfig} className="h-[200px] w-full">
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='month'
+              dataKey="month"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -145,7 +140,7 @@ const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey='desktop' fill='var(--color-desktop)' radius={8} />
+            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
@@ -159,7 +154,7 @@ const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
       </CardFooter> */}
     </Card>
   );
-};
+}
 
 //PIE CHART CODE
 export const pieDescription = "An interactive pie chart";
@@ -207,11 +202,11 @@ const pieChartConfig = {
 export function ChartPieInteractive() {
   const id = "pie-interactive";
   const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
-  
+
   //Clean this code later
   React.useEffect(() => {
     const history = false;
-    if (history) setActiveMonth('')
+    if (history) setActiveMonth("");
   }, []);
   const activeIndex = React.useMemo(
     () => desktopData.findIndex((item) => item.month === activeMonth),
@@ -219,29 +214,29 @@ export function ChartPieInteractive() {
   );
 
   return (
-    <Card data-chart={id} className='flex flex-col'>
+    <Card data-chart={id} className="flex flex-col">
       <ChartStyle id={id} config={pieChartConfig} />
-      <CardHeader className='flex-row items-start space-y-0 pb-0'>
-        <div className='grid gap-1'>
+      <CardHeader className="flex-row items-start space-y-0 pb-0">
+        <div className="grid gap-1">
           <CardTitle>Lead Sources</CardTitle>
           {/* <CardDescription>January - June 2024</CardDescription> */}
         </div>
       </CardHeader>
-      <CardContent className='px-0 pb-0 flex items-center'>
+      <CardContent className="px-0 pb-0 flex items-center">
         <ChartContainer
           id={id}
           config={pieChartConfig}
-          className=' w-full max-w-[260px] h-[220px]'
+          className=" w-full max-w-[260px] h-[220px]"
         >
-          <PieChart className=''>
+          <PieChart className="">
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
               data={desktopData}
-              dataKey='desktop'
-              nameKey='month'
+              dataKey="desktop"
+              nameKey="month"
               innerRadius={45}
               strokeWidth={5}
               activeIndex={activeIndex}
@@ -266,20 +261,20 @@ export function ChartPieInteractive() {
                       <text
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        textAnchor='middle'
-                        dominantBaseline='middle'
+                        textAnchor="middle"
+                        dominantBaseline="middle"
                       >
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className='fill-foreground text-3xl font-bold'
+                          className="fill-foreground text-3xl font-bold"
                         >
                           {desktopData[activeIndex].desktop.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className='fill-muted-foreground'
+                          className="fill-muted-foreground"
                         >
                           Visitors
                         </tspan>
@@ -292,26 +287,26 @@ export function ChartPieInteractive() {
           </PieChart>
         </ChartContainer>
         <section>
-          <ul className='space-y-2 text-slate-700'>
-            <li className='flex items-center gap-2'>
-              <GoDotFill className='text-[#A7CC48]' />{" "}
-              <span className='text-xs'>Instagram</span>
+          <ul className="space-y-2 text-slate-700">
+            <li className="flex items-center gap-2">
+              <GoDotFill className="text-[#A7CC48]" />{" "}
+              <span className="text-xs">Instagram</span>
             </li>
-            <li className='flex items-center gap-2'>
-              <GoDotFill className='text-[#A7CC48]' />{" "}
-              <span className='text-xs'>Tiktok Ads</span>
+            <li className="flex items-center gap-2">
+              <GoDotFill className="text-[#A7CC48]" />{" "}
+              <span className="text-xs">Tiktok Ads</span>
             </li>
-            <li className='flex items-center gap-2'>
-              <GoDotFill className='text-[#BDE84F]' />{" "}
-              <span className='text-xs'>Facebook Ads</span>
+            <li className="flex items-center gap-2">
+              <GoDotFill className="text-[#BDE84F]" />{" "}
+              <span className="text-xs">Facebook Ads</span>
             </li>
-            <li className='flex items-center gap-2'>
-              <GoDotFill className='text-[#D1F379]' />{" "}
-              <span className='text-xs'>Youtube Ads</span>
+            <li className="flex items-center gap-2">
+              <GoDotFill className="text-[#D1F379]" />{" "}
+              <span className="text-xs">Youtube Ads</span>
             </li>
-            <li className='flex items-center gap-2'>
-              <GoDotFill className='text-[#DFF2AD]' />{" "}
-              <span className='text-xs'>WhatsApp Channel</span>
+            <li className="flex items-center gap-2">
+              <GoDotFill className="text-[#DFF2AD]" />{" "}
+              <span className="text-xs">WhatsApp Channel</span>
             </li>
           </ul>
         </section>
@@ -319,4 +314,3 @@ export function ChartPieInteractive() {
     </Card>
   );
 }
-

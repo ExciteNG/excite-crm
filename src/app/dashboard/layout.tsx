@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/src/components/dashboardLayout/Header";
 import SideNav from "@/src/components/dashboardLayout/SideNav";
-import FootPagination from "@/src/components/dashboardLayout/FootPagination";
+// import FootPagination from "@/src/components/dashboardLayout/FootPagination";
 
 export const metadata: Metadata = {
   title: "Excite Enterprise CRM Dashboard",

@@ -195,3 +195,7 @@ export function localDateFromUtcISOString(utcString: string): Date {
   const date = new Date(utcString);
   return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
 }
+
+export const formatNumber = (value: number): string => {
+  return new Intl.NumberFormat("en").format(value);
+};

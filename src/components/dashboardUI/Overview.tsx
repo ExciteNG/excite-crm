@@ -1,6 +1,6 @@
-// "use client";
+"use client";
 
-import React from "react";
+import React, { ChangeEvent, MouseEvent, useState } from "react";
 import DashCard from "./reusableComponents/DashCard";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import { HiMiniUsers } from "react-icons/hi2";
@@ -17,7 +17,7 @@ import {
   TableHead,
   TableCell,
 } from "../ui/table";
-import { tableContent } from "@/src/lib/contents";
+// import { tableContent } from "@/src/lib/contents";
 import {
   Select,
   SelectTrigger,
@@ -28,14 +28,79 @@ import {
 import { Label } from "../ui/label";
 import StatusTag from "./reusableComponents/StatusTag";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-// import { useReactQuery } from "@/src/services/apiHelper";
+import { useReactQuery } from "@/src/services/apiHelper";
+import { formatDate, formatNumber } from "@/src/lib/utils";
+
+type StoreInfo<T> = {
+  storeName: T;
+  storeAddress: T;
+  storePhone: T;
+  storeLga: T;
+  storeState: T;
+};
+
+type Location = {
+  address: string;
+  city: string;
+  state: string;
+  country: string;
+};
+
+type User = {
+  id: string;
+  fullname: string;
+  storeInfo: StoreInfo<string>;
+  email: string;
+  phoneNumber: string;
+  location: Location;
+  subscriptionPlan: string;
+  registrationDate: string;
+  businessCategory: string;
+  walletActive: false;
+  status: string;
+  numberOfProducts: number;
+  numberOfCustomers: number;
+};
+
+type Lead = {
+  name: {
+    firstname: string;
+    lastname: string;
+    fullname: string;
+  };
+  location: Location;
+  email: string;
+  phoneNumber: string;
+  language: string;
+  country: string;
+  businessName: string;
+  businessCategory: string;
+  status: string;
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+const statusTitle = ["all", "messaged", "converted", "called", "follow-up"];
+
+type Status = "all" | "messaged" | "converted" | "called" | "follow-up";
 
 const Overview = () => {
-  // const { data, isLoading, error } = useReactQuery(
-  //   ["users"],
-  //   "/user/excite-users"
-  // );
-  // console.log(data);
+  const [status, setStatus] = useState<Status>("all");
+  const { data: usersData } = useReactQuery<User[]>(
+    ["users"],
+    "/user/excite-users"
+  );
+
+  const { data: leadsData } = useReactQuery<Lead[]>(["leads"], "/leads");
+
+  const users = usersData?.data.data;
+  const leads = leadsData?.data.data;
+
+  console.log(leads);
+  // console.log(status);
+  const leadSources = leads?.map((lead) => lead.source);
+  console.log(leadSources);
 
   return (
     <section className="space-y-7">
@@ -43,7 +108,7 @@ const Overview = () => {
         <DashCard
           Icon={HiMiniUserGroup}
           title={"total users"}
-          matrix={123}
+          matrix={formatNumber(users?.length as number)}
           iconBg="bg-[#EDF9FF]"
           iconColor="text-[#12A6F0]"
         />
@@ -57,7 +122,7 @@ const Overview = () => {
         <DashCard
           Icon={MdGroupAdd}
           title={"leads"}
-          matrix={50}
+          matrix={formatNumber(leads?.length as number)}
           iconBg="bg-[#FEF3F2]"
           iconColor="text-[#E7000B]"
         />
@@ -75,22 +140,23 @@ const Overview = () => {
           <p className="text-slate-700 font-semibold ">Recent Leads</p>
           <div className="w-full flex flex-col items-end gap-1 mt-5">
             <Label className="w-[180px]">Filter by Status</Label>
-            <Select>
+            <Select value={status}>
               <SelectTrigger
                 className="ml-auto h-7 w-[180px] rounded-lg pl-2.5"
                 aria-label="Select a value"
               >
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
-              <SelectContent align="end" className="rounded-xl">
-                {tableContent.map((status, key) => {
+              <SelectContent className="rounded-xl">
+                {statusTitle.map((title, index) => {
                   return (
-                    <div key={key} className="capitalize">
-                      <SelectItem value={status.status}>
-                        {status.status}
-                      </SelectItem>
-                      {/* <SelectSeparator /> */}
-                    </div>
+                    <SelectItem
+                      value={title}
+                      key={index}
+                      className="capitalize"
+                    >
+                      {title.charAt(0).toUpperCase() + title.slice(1)}
+                    </SelectItem>
                   );
                 })}
               </SelectContent>
@@ -123,17 +189,27 @@ const Overview = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {tableContent.map((row, index) => {
+              {leads?.map((row, index) => {
                 return (
                   <TableRow key={index} className="h-16">
-                    <TableCell className="text-center">{row.name}</TableCell>
-                    <TableCell className="text-center">{row.email}</TableCell>
-                    <TableCell className="text-center">{row.phone}</TableCell>
                     <TableCell className="text-center">
-                      {row.location}
+                      {row.name.fullname}
                     </TableCell>
-                    <TableCell className="text-center">{row.source}</TableCell>
-                    <TableCell className="text-center">{row.date}</TableCell>
+                    <TableCell className="text-center lowercase">
+                      {row.email}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {row.phoneNumber}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {row.location.city} {row.location.state}
+                    </TableCell>
+                    <TableCell className="text-center capitalize">
+                      {row.source}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {formatDate(row.createdAt)}
+                    </TableCell>
                     <TableCell>
                       <StatusTag status={row.status} />
                     </TableCell>

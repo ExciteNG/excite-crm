@@ -38,6 +38,7 @@ export default function Home() {
     defaultValues: { email: "", password: "" },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { mutate, isPending } = useReactMutation<any, any>(
     `/auth/login`,
     "post"

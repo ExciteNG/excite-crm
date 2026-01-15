@@ -387,3 +387,58 @@ export enum FunctionTypes {
   LOCATION_MANAGER = "location_manager",
   SUPERVISOR = "supervisor",
 }
+
+type StoreInfo<T> = {
+  storeName: T;
+  storeAddress: T;
+  storePhone: T;
+  storeLga: T;
+  storeState: T;
+};
+
+type Location = {
+  address: string;
+  lga: string;
+  city: string;
+  state: string;
+  country: string;
+};
+
+export type User = {
+  id: string;
+  fullname: string;
+  storeInfo: StoreInfo<string>;
+  email: string;
+  phoneNumber: string;
+  location: Location;
+  subscriptionPlan: string;
+  registrationDate: string;
+  businessCategory: string;
+  lastLogin: string;
+  source: string;
+  walletActive: false;
+  status: string;
+  numberOfProducts: number;
+  numberOfCustomers: number;
+};
+
+export type Lead = {
+  id: string;
+  name: {
+    firstname: string;
+    lastname: string;
+    fullname: string;
+  };
+  location: Location;
+  email: string;
+  phoneNumber: string;
+  language: string;
+  country: string;
+  businessName: string;
+  lastLogin: string;
+  businessCategory: string;
+  status: string;
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+};

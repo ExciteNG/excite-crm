@@ -16,11 +16,13 @@ const StatusTag = ({ status }: { status: string }) => {
   return (
     <div
       className={`${
-        pairColor[status as keyof PairColorProps][0]
+        pairColor[status as keyof PairColorProps]?.[0]
       } p-1 px-3 rounded-full w-fit`}
     >
       <p
-        className={`capitalize ${pairColor[status as keyof PairColorProps][1]}`}
+        className={`capitalize ${
+          pairColor[status as keyof PairColorProps]?.[1]
+        }`}
       >
         {status}
       </p>

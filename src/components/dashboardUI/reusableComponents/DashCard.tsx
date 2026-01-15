@@ -4,7 +4,7 @@ import { IconType } from "react-icons";
 type DashProps = {
   Icon: IconType;
   title: string;
-  matrix: number;
+  matrix: number | string;
   iconBg?: string;
   iconColor?: string;
 };

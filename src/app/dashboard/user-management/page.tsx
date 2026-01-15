@@ -18,13 +18,17 @@ export default function UserManagementPage() {
       <div className="flex bg-muted rounded-xl p-1 w-fit">
         <button
           onClick={() => setTab("users")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${tab === "users" ? "bg-white shadow" : "text-muted-foreground"}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${
+            tab === "users" ? "bg-white shadow" : "text-muted-foreground"
+          }`}
         >
           <Users size={16} /> All Users
         </button>
         <button
           onClick={() => setTab("leads")}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${tab === "leads" ? "bg-white shadow" : "text-muted-foreground"}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium ${
+            tab === "leads" ? "bg-white shadow" : "text-muted-foreground"
+          }`}
         >
           <Shield size={16} /> Leads
         </button>

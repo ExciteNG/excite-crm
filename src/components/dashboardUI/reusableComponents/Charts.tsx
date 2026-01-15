@@ -30,107 +30,129 @@ import { GoDotFill } from "react-icons/go";
 
 export const description = "A bar chart";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
+const chartDataByYear = {
+  2022: [
+    { month: "January", users: 0 },
+    { month: "February", users: 0 },
+    { month: "March", users: 0 },
+    { month: "April", users: 0 },
+    { month: "May", users: 0 },
+    { month: "June", users: 0 },
+    { month: "July", users: 189 },
+    { month: "August", users: 356 },
+    { month: "September", users: 489 },
+    { month: "October", users: 401 },
+    { month: "November", users: 298 },
+    { month: "December", users: 156 },
+  ],
+  2023: [
+    { month: "January", users: 142 },
+    { month: "February", users: 98 },
+    { month: "March", users: 67 },
+    { month: "April", users: 45 },
+    { month: "May", users: 32 },
+    { month: "June", users: 24 },
+    { month: "July", users: 18 },
+    { month: "August", users: 14 },
+    { month: "September", users: 12 },
+    { month: "October", users: 10 },
+    { month: "November", users: 8 },
+    { month: "December", users: 6 },
+  ],
+  2024: [
+    { month: "January", users: 4 },
+    { month: "February", users: 3 },
+    { month: "March", users: 2 },
+    { month: "April", users: 2 },
+    { month: "May", users: 1 },
+    { month: "June", users: 1 },
+    { month: "July", users: 1 },
+    { month: "August", users: 0 },
+    { month: "September", users: 0 },
+    { month: "October", users: 0 },
+    { month: "November", users: 5 },
+    { month: "December", users: 0 },
+  ],
+  2025: [
+    { month: "January", users: 0 },
+    { month: "February", users: 0 },
+    { month: "March", users: 2 },
+    { month: "April", users: 0 },
+    { month: "May", users: 6 },
+    { month: "June", users: 0 },
+    { month: "July", users: 0 },
+    { month: "August", users: 1 },
+    { month: "September", users: 5 },
+    { month: "October", users: 0 },
+    { month: "November", users: 0 },
+    { month: "December", users: 3 },
+  ],
+  2026: [
+    { month: "January", users: 1 },
+    { month: "February", users: 0 },
+    { month: "March", users: 0 },
+    { month: "April", users: 0 },
+    { month: "May", users: 0 },
+    { month: "June", users: 0 },
+    { month: "July", users: 0 },
+    { month: "August", users: 0 },
+    { month: "September", users: 0 },
+    { month: "October", users: 0 },
+    { month: "November", users: 0 },
+    { month: "December", users: 0 },
+  ],
+};
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  users: {
+    label: "Users",
     color: "#A7CC48",
   },
 } satisfies ChartConfig;
 
 export function ChartBarDefault() {
-  const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
+  const [activeYear, setActiveYear] = React.useState("2022");
+  const chartData =
+    chartDataByYear[activeYear as unknown as keyof typeof chartDataByYear];
+  const years = Object.keys(chartDataByYear);
 
-  const pieChartConfig = {
-    visitors: {
-      label: "Visitors",
-    },
-    desktop: {
-      label: "Desktop",
-    },
-    mobile: {
-      label: "Mobile",
-    },
-    january: {
-      label: "January",
-      color: "var(--chart-1)",
-    },
-    february: {
-      label: "February",
-      color: "var(--chart-2)",
-    },
-    march: {
-      label: "March",
-      color: "var(--chart-3)",
-    },
-    april: {
-      label: "April",
-      color: "var(--chart-4)",
-    },
-    may: {
-      label: "May",
-      color: "var(--chart-5)",
-    },
-  } satisfies ChartConfig;
-
-  const months = React.useMemo(() => desktopData.map((item) => item.month), []);
   return (
-    <Card className="w-full">
-      <CardHeader className="flex justify-between items-center">
-        <div className="space-y-1.5">
+    <Card className='w-full'>
+      <CardHeader className='flex justify-between items-center'>
+        <div className='space-y-1.5'>
           <CardTitle>Monthly Sign-ups</CardTitle>
           <CardDescription>Signup breakdown</CardDescription>
         </div>
-        <Select value={activeMonth} onValueChange={setActiveMonth}>
+        <Select value={activeYear} onValueChange={setActiveYear}>
           <SelectTrigger
-            className="ml-auto h-7 w-[130px] rounded-lg pl-2.5"
-            aria-label="Select a value"
+            className='ml-auto h-7 w-[130px] rounded-lg pl-2.5'
+            aria-label='Select a year'
           >
-            <SelectValue placeholder="Select month" />
+            <SelectValue placeholder='Select year' />
           </SelectTrigger>
-          <SelectContent align="end">
-            {months.map((key) => {
-              const config = pieChartConfig[key as keyof typeof pieChartConfig];
-
-              if (!config) {
-                return null;
-              }
-
-              return (
-                <SelectItem
-                  key={key}
-                  value={key}
-                  className="rounded-lg [&_span]:flex"
-                >
-                  <div className="flex items-center gap-2 text-xs">
-                    <span
-                      className="flex h-3 w-3 shrink-0 rounded-xs"
-                      style={{
-                        backgroundColor: `var(--color-${key})`,
-                      }}
-                    />
-                    {config?.label}
-                  </div>
-                </SelectItem>
-              );
-            })}
+          <SelectContent align='end'>
+            {years.map((year) => (
+              <SelectItem key={year} value={year} className='rounded-lg'>
+                <div className='flex items-center gap-2 text-xs'>
+                  <span
+                    className='flex h-3 w-3 shrink-0 rounded-xs'
+                    style={{
+                      backgroundColor: "#A7CC48",
+                    }}
+                  />
+                  {year}
+                </div>
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className="w-full">
-        <ChartContainer config={chartConfig} className="h-[200px] w-full">
+      <CardContent className='w-full'>
+        <ChartContainer config={chartConfig} className='h-[200px] w-full'>
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="month"
+              dataKey='month'
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -140,18 +162,10 @@ export function ChartBarDefault() {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
+            <Bar dataKey='users' fill='var(--color-users)' radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      {/* <CardFooter className='flex-col items-start gap-2 text-sm'>
-        <div className='flex gap-2 leading-none font-medium'>
-          Trending up by 5.2% this month <TrendingUp className='h-4 w-4' />
-        </div>
-        <div className='text-muted-foreground leading-none'>
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter> */}
     </Card>
   );
 }
@@ -159,84 +173,148 @@ export function ChartBarDefault() {
 //PIE CHART CODE
 export const pieDescription = "An interactive pie chart";
 
-const desktopData = [
-  { month: "january", desktop: 186, fill: "var(--color-january)" },
-  { month: "february", desktop: 305, fill: "var(--color-february)" },
-  { month: "march", desktop: 237, fill: "var(--color-march)" },
-  { month: "april", desktop: 173, fill: "var(--color-april)" },
-  { month: "may", desktop: 209, fill: "var(--color-may)" },
-];
+type Lead = {
+  name: {
+    firstname: string;
+    lastname: string;
+    fullname: string;
+  };
+  location: {
+    address: string;
+    city: string;
+    state: string;
+    country: string;
+  };
+  email: string;
+  phoneNumber: string;
+  language: string;
+  country: string;
+  businessName: string;
+  businessCategory: string;
+  status: string;
+  source: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
-const pieChartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  desktop: {
-    label: "Desktop",
-  },
-  mobile: {
-    label: "Mobile",
-  },
-  january: {
-    label: "January",
-    color: `#A7CC48`,
-  },
-  february: {
-    label: "February",
-    color: "#A7CC48",
-  },
-  march: {
-    label: "March",
-    color: "#BDE84F",
-  },
-  april: {
-    label: "April",
-    color: "#D1F379",
-  },
-  may: {
-    label: "May",
-    color: "#DFF2AD",
-  },
-} satisfies ChartConfig;
+const sourceColors: Record<string, string> = {
+  "online-event": "#A7CC48",
+  "physical-event": "#BDE84F",
+  facebook: "#D1F379",
+  instagram: "#DFF2AD",
+  twitter: "#E8F7A0",
+  linkedin: "#F0F9CE",
+  referral: "#A7CC48",
+  "excite-app": "#BDE84F",
+  "excite-website": "#D1F379",
+  other: "#999999",
+};
 
-export function ChartPieInteractive() {
+const sourceLabels: Record<string, string> = {
+  "online-event": "Online Event",
+  "physical-event": "Physical Event",
+  facebook: "Facebook",
+  instagram: "Instagram",
+  twitter: "Twitter",
+  linkedin: "LinkedIn",
+  referral: "Referral",
+  "excite-app": "Excite App",
+  "excite-website": "Excite Website",
+  other: "Other",
+};
+
+export function ChartPieInteractive({ leads }: { leads?: Lead[] }) {
   const id = "pie-interactive";
-  const [activeMonth, setActiveMonth] = React.useState(desktopData[0].month);
 
-  //Clean this code later
-  React.useEffect(() => {
-    const history = false;
-    if (history) setActiveMonth("");
-  }, []);
-  const activeIndex = React.useMemo(
-    () => desktopData.findIndex((item) => item.month === activeMonth),
-    [activeMonth]
+  const pieData = React.useMemo(() => {
+    if (!leads || leads.length === 0) return [];
+
+    const sourceCount: Record<string, number> = {};
+    leads.forEach((lead) => {
+      const source = lead.source.toLowerCase();
+      sourceCount[source] = (sourceCount[source] || 0) + 1;
+    });
+
+    return Object.entries(sourceCount)
+      .map(([source, count]) => ({
+        source,
+        count,
+        fill: sourceColors[source] || "#999999",
+      }))
+      .sort((a, b) => b.count - a.count);
+  }, [leads]);
+
+  const [activeSource, setActiveSource] = React.useState(
+    pieData[0]?.source || ""
   );
 
+  const pieChartConfig = React.useMemo(() => {
+    const config: Record<string, { label: string; color: string }> = {
+      count: {
+        label: "Count",
+        color: "",
+      },
+    };
+
+    pieData.forEach((item) => {
+      config[item.source] = {
+        label: sourceLabels[item.source] || item.source,
+        color: item.fill,
+      };
+    });
+
+    return config;
+  }, [pieData]) satisfies ChartConfig;
+
+  const activeIndex = React.useMemo(
+    () => pieData.findIndex((item) => item.source === activeSource),
+    [activeSource, pieData]
+  );
+
+  React.useEffect(() => {
+    if (pieData.length > 0 && !activeSource) {
+      setActiveSource(pieData[0].source);
+    }
+  }, [pieData, activeSource]);
+
+  if (!pieData || pieData.length === 0) {
+    return (
+      <Card className='flex flex-col'>
+        <CardHeader className='flex-row items-start space-y-0 pb-0'>
+          <div className='grid gap-1'>
+            <CardTitle>Lead Sources</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className='px-0 pb-0 flex items-center justify-center h-[220px]'>
+          <p className='text-muted-foreground'>No leads data available</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card data-chart={id} className="flex flex-col">
+    <Card data-chart={id} className='flex flex-col'>
       <ChartStyle id={id} config={pieChartConfig} />
-      <CardHeader className="flex-row items-start space-y-0 pb-0">
-        <div className="grid gap-1">
+      <CardHeader className='flex-row items-start space-y-0 pb-0'>
+        <div className='grid gap-1'>
           <CardTitle>Lead Sources</CardTitle>
-          {/* <CardDescription>January - June 2024</CardDescription> */}
         </div>
       </CardHeader>
-      <CardContent className="px-0 pb-0 flex items-center">
+      <CardContent className='p-5 flex items-center gap-4 h-[220px]'>
         <ChartContainer
           id={id}
           config={pieChartConfig}
-          className=" w-full max-w-[260px] h-[220px]"
+          className='w-full max-w-[180px] h-40'
         >
-          <PieChart className="">
+          <PieChart>
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
             <Pie
-              data={desktopData}
-              dataKey="desktop"
-              nameKey="month"
+              data={pieData}
+              dataKey='count'
+              nameKey='source'
               innerRadius={45}
               strokeWidth={5}
               activeIndex={activeIndex}
@@ -257,26 +335,28 @@ export function ChartPieInteractive() {
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    const count = pieData[activeIndex]?.count || 0;
+                    const source = pieData[activeIndex]?.source || "";
                     return (
                       <text
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
+                        textAnchor='middle'
+                        dominantBaseline='middle'
                       >
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          className='fill-foreground text-3xl font-bold'
                         >
-                          {desktopData[activeIndex].desktop.toLocaleString()}
+                          {count.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          className='fill-muted-foreground text-xs'
                         >
-                          Visitors
+                          {sourceLabels[source] || source}
                         </tspan>
                       </text>
                     );
@@ -287,27 +367,15 @@ export function ChartPieInteractive() {
           </PieChart>
         </ChartContainer>
         <section>
-          <ul className="space-y-2 text-slate-700">
-            <li className="flex items-center gap-2">
-              <GoDotFill className="text-[#A7CC48]" />{" "}
-              <span className="text-xs">Instagram</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <GoDotFill className="text-[#A7CC48]" />{" "}
-              <span className="text-xs">Tiktok Ads</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <GoDotFill className="text-[#BDE84F]" />{" "}
-              <span className="text-xs">Facebook Ads</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <GoDotFill className="text-[#D1F379]" />{" "}
-              <span className="text-xs">Youtube Ads</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <GoDotFill className="text-[#DFF2AD]" />{" "}
-              <span className="text-xs">WhatsApp Channel</span>
-            </li>
+          <ul className='space-y-2 text-slate-700 max-h-[220px] overflow-y-auto'>
+            {pieData.map((item) => (
+              <li key={item.source} className='flex items-center gap-2'>
+                <GoDotFill className='shrink-0' style={{ color: item.fill }} />
+                <span className='text-xs'>
+                  {sourceLabels[item.source] || item.source} ({item.count})
+                </span>
+              </li>
+            ))}
           </ul>
         </section>
       </CardContent>

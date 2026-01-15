@@ -45,4 +45,4 @@ export const tableContent = [
     status: "messaged",
   },
 ];
-const status: ["messaged", "converted", "called", "follow-up"];
+export const status = ["messaged", "converted", "called", "follow-up"];

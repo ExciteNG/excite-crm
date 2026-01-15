@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { ChangeEvent, MouseEvent, useState } from "react";
@@ -97,63 +98,63 @@ const Overview = () => {
   const users = usersData?.data.data;
   const leads = leadsData?.data.data;
 
-  console.log(leads);
+  console.log("Leads: ", leads);
   // console.log(status);
   const leadSources = leads?.map((lead) => lead.source);
   console.log(leadSources);
 
   return (
-    <section className="space-y-7">
-      <div className="grid grid-cols-3 gap-5 bg-slate-100/65 py-4">
+    <section className='space-y-7'>
+      <div className='grid grid-cols-3 gap-5 bg-slate-100/65 py-4'>
         <DashCard
           Icon={HiMiniUserGroup}
           title={"total users"}
           matrix={formatNumber(users?.length as number)}
-          iconBg="bg-[#EDF9FF]"
-          iconColor="text-[#12A6F0]"
+          iconBg='bg-[#EDF9FF]'
+          iconColor='text-[#12A6F0]'
         />
         <DashCard
           Icon={HiMiniUsers}
           title={"active users"}
-          matrix={40}
-          iconBg="bg-[#E6FFF2]"
-          iconColor="text-[#00AA4F]"
+          matrix={2}
+          iconBg='bg-[#E6FFF2]'
+          iconColor='text-[#00AA4F]'
         />
         <DashCard
           Icon={MdGroupAdd}
           title={"leads"}
           matrix={formatNumber(leads?.length as number)}
-          iconBg="bg-[#FEF3F2]"
-          iconColor="text-[#E7000B]"
+          iconBg='bg-[#FEF3F2]'
+          iconColor='text-[#E7000B]'
         />
       </div>
-      <article className="flex justify-between">
-        <div className="w-3/5">
+      <article className='flex justify-between'>
+        <div className='w-3/5'>
           <ChartBarDefault />
         </div>
-        <div className="w-3/8">
-          <ChartPieInteractive />
+        <div className='w-3/8'>
+          <ChartPieInteractive leads={leads || undefined} />
         </div>
       </article>
-      <section className="h-fit px-5 border rounded-md shadow">
-        <div className="p-8 divide-solid divide-[#EFEFF0] divide-y-2">
-          <p className="text-slate-700 font-semibold ">Recent Leads</p>
-          <div className="w-full flex flex-col items-end gap-1 mt-5">
-            <Label className="w-[180px]">Filter by Status</Label>
+      <section className='h-fit px-5 border rounded-md shadow'>
+        <div className='p-8 divide-solid divide-[#EFEFF0] divide-y-2'>
+          <p className='text-slate-700 font-semibold '>Recent Leads</p>
+          <div className='w-full flex flex-col items-end gap-1 mt-5'>
+            <Label className='w-[180px]'>Filter by Status</Label>
             <Select value={status}>
               <SelectTrigger
-                className="ml-auto h-7 w-[180px] rounded-lg pl-2.5"
-                aria-label="Select a value"
+                className='ml-auto h-7 w-[180px] rounded-lg pl-2.5'
+                aria-label='Select a value'
               >
-                <SelectValue placeholder="All Status" />
+                <SelectValue placeholder='All Status' />
               </SelectTrigger>
-              <SelectContent className="rounded-xl">
+              <SelectContent className='rounded-xl'>
                 {statusTitle.map((title, index) => {
                   return (
                     <SelectItem
                       value={title}
                       key={index}
-                      className="capitalize"
+                      className='capitalize'
                     >
                       {title.charAt(0).toUpperCase() + title.slice(1)}
                     </SelectItem>
@@ -163,51 +164,51 @@ const Overview = () => {
             </Select>
           </div>
         </div>
-        <div className="max-h-[500px] p-8 overflow-auto">
+        <div className='max-h-[500px] p-8 overflow-auto'>
           <Table>
             <TableHeader>
-              <TableRow className="bg-[#EFEFF0]/45">
-                <TableHead className="text-center font-semibold text-[#4F4F4F">
+              <TableRow className='bg-[#EFEFF0]/45'>
+                <TableHead className='text-center font-semibold text-[#4F4F4F'>
                   Full Name
                 </TableHead>
-                <TableHead className="text-center text-[#4F4F4F">
+                <TableHead className='text-center text-[#4F4F4F'>
                   Email
                 </TableHead>
-                <TableHead className="text-center text-[#4F4F4F">
+                <TableHead className='text-center text-[#4F4F4F'>
                   Phone Number
                 </TableHead>
-                <TableHead className="text-center text-[#4F4F4F">
+                <TableHead className='text-center text-[#4F4F4F'>
                   Location
                 </TableHead>
-                <TableHead className="text-center text-[#4F4F4F">
+                <TableHead className='text-center text-[#4F4F4F'>
                   Source
                 </TableHead>
-                <TableHead className="text-center text-[#4F4F4F">
+                <TableHead className='text-center text-[#4F4F4F'>
                   Registered Date
                 </TableHead>
-                <TableHead className="text-[#4F4F4F">Status</TableHead>
+                <TableHead className='text-[#4F4F4F'>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {leads?.map((row, index) => {
                 return (
-                  <TableRow key={index} className="h-16">
-                    <TableCell className="text-center">
+                  <TableRow key={index} className='h-16'>
+                    <TableCell className='text-center'>
                       {row.name.fullname}
                     </TableCell>
-                    <TableCell className="text-center lowercase">
+                    <TableCell className='text-center lowercase'>
                       {row.email}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className='text-center'>
                       {row.phoneNumber}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className='text-center'>
                       {row.location.city} {row.location.state}
                     </TableCell>
-                    <TableCell className="text-center capitalize">
+                    <TableCell className='text-center capitalize'>
                       {row.source}
                     </TableCell>
-                    <TableCell className="text-center">
+                    <TableCell className='text-center'>
                       {formatDate(row.createdAt)}
                     </TableCell>
                     <TableCell>
@@ -222,8 +223,8 @@ const Overview = () => {
       </section>
 
       {/* pagination */}
-      <div className="flex justify-center items-center gap-2 mt-6">
-        <button className="p-2 rounded-lg border">
+      <div className='flex justify-center items-center gap-2 mt-6'>
+        <button className='p-2 rounded-lg border'>
           <ChevronLeft size={16} />
         </button>
         {[1, 2].map((page) => (
@@ -236,7 +237,7 @@ const Overview = () => {
             {page}
           </button>
         ))}
-        <button className="p-2 rounded-lg border">
+        <button className='p-2 rounded-lg border'>
           <ChevronRight size={16} />
         </button>
       </div>

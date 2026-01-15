@@ -17,25 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "@/components/ui/dialog";
-// import { Input } from "@/components/ui/input";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { OverviewData, Query } from "@/src/lib/types";
-
 import { Loader2, RefreshCcw } from "lucide-react";
-// import { AlertCircle } from "lucide-react";
-// import { Button } from "../ui/button";
-// import {
-//   useAddSubscriberMutation,
-//   useGetSubscribersQuery,
-// } from "@/store/services/api/emailSubscription";
 // import { toast } from "sonner";
 import { platforms, sectors } from "@/src/lib/utils";
 
@@ -97,8 +80,6 @@ export default function FetchEmailsSideBar({
       // setUsersData(data.data);
     } catch (error) {
       console.log(error);
-    } finally {
-      // setIsFetching(false);
     }
   };
 
@@ -201,7 +182,11 @@ export default function FetchEmailsSideBar({
   // console.log(queryParams);
 
   return (
+<<<<<<< HEAD
+    <div className="border bg-white px-2 py-4 w-full md:w-1/4">
+=======
     <div className="border w-full md:w-1/4 p-2.5">
+>>>>>>> main
       {/* <div className="flex justify-end pb-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -335,7 +320,7 @@ export default function FetchEmailsSideBar({
           }));
         }}
       >
-        <SelectTrigger className="mt-3">
+        <SelectTrigger className="mt-3 w-full">
           <SelectValue placeholder="Filter by Platform" />
         </SelectTrigger>
         <SelectContent>
@@ -366,7 +351,7 @@ export default function FetchEmailsSideBar({
           }));
         }}
       >
-        <SelectTrigger className="mt-3">
+        <SelectTrigger className="mt-3 w-full">
           <SelectValue placeholder="Filter by Sector" />
         </SelectTrigger>
         <SelectContent>
@@ -396,7 +381,7 @@ export default function FetchEmailsSideBar({
           }));
         }}
       >
-        <SelectTrigger className="mt-3">
+        <SelectTrigger className="mt-3 w-full">
           <SelectValue placeholder="Filter by UserType" />
         </SelectTrigger>
         <SelectContent>

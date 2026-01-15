@@ -14,17 +14,23 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className='w-screen h-screen'>
-      <section className='flex'>
-        <aside className='h-screen w-1/5 bg-[#101828]'>
+    <main className="w-screen h-screen">
+      <section className="flex">
+        <aside className="h-screen w-1/5 bg-[#101828]">
           <SideNav />
         </aside>
-        <section className='h-screen w-4/5'>
-          <nav className='h-12 border w-full'>
+        <section className="h-screen w-4/5">
+          <nav className="h-12 border w-full">
             <Header />
           </nav>
           <section
             className={`antialiased h-[calc(100vh-48px)] overflow-y-auto px-4 pb-4 bg-slate-100/65`}
+          >
+            {children}
+          </section>
+          {/* <footer className="h-12 bg-white">
+          <section
+            className={`antialiased h-[calc(100vh-96px)] overflow-y-auto px-4 pb-4 bg-slate-100/65`}
           >
             {children}
           </section>

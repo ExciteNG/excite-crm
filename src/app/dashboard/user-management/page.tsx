@@ -34,8 +34,6 @@ export default function UserManagementPage() {
         </button>
       </div>
 
-      {/* Card */}
-
       {tab === "users" ? <AllUsers /> : <Leads />}
     </div>
   );

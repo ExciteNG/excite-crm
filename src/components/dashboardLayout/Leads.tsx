@@ -1,64 +1,70 @@
 import React from "react";
-import { Users, MessageCircle } from "lucide-react";
+import { Users } from "lucide-react";
+import { Lead } from "@/src/lib/types";
+import { useReactQuery } from "@/src/services/apiHelper";
 
-const leads = [
-  {
-    name: "Jenny Wilson",
-    email: "john@church.com",
-    phone: "0819 012 3456",
-    location: "Yaba",
-    source: "Facebook",
-    lastLogin: "2 min ago",
-    status: "Follow-up",
-  },
-  {
-    name: "Eleanor Pena",
-    email: "john@church.com",
-    phone: "0901 123 4567",
-    location: "Mushin",
-    source: "Tiktok",
-    lastLogin: "1 hour ago",
-    status: "Messaged",
-  },
-  {
-    name: "Leslie Alexander",
-    email: "john@church.com",
-    phone: "0704 567 8901",
-    location: "Ajegunle",
-    source: "Youtube",
-    lastLogin: "2 hour ago",
-    status: "Called",
-  },
-  {
-    name: "Marvin McKinney",
-    email: "john@church.com",
-    phone: "0810 123 4567",
-    location: "Computer Village",
-    source: "Whatsapp",
-    lastLogin: "8 hour ago",
-    status: "Converted",
-  },
-  {
-    name: "Arlene McCoy",
-    email: "john@church.com",
-    phone: "0701 234 5678",
-    location: "Abule Egba",
-    source: "Online Event",
-    lastLogin: "1 day ago",
-    status: "Messaged",
-  },
-  {
-    name: "Albert Flores",
-    email: "john@church.com",
-    phone: "0817 890 1234",
-    location: "Eko Hotel",
-    source: "Others",
-    lastLogin: "30 days ago",
-    status: "Messaged",
-  },
-];
+// const leads = [
+//   {
+//     name: "Jenny Wilson",
+//     email: "john@church.com",
+//     phone: "0819 012 3456",
+//     location: "Yaba",
+//     source: "Facebook",
+//     lastLogin: "2 min ago",
+//     status: "Follow-up",
+//   },
+//   {
+//     name: "Eleanor Pena",
+//     email: "john@church.com",
+//     phone: "0901 123 4567",
+//     location: "Mushin",
+//     source: "Tiktok",
+//     lastLogin: "1 hour ago",
+//     status: "Messaged",
+//   },
+//   {
+//     name: "Leslie Alexander",
+//     email: "john@church.com",
+//     phone: "0704 567 8901",
+//     location: "Ajegunle",
+//     source: "Youtube",
+//     lastLogin: "2 hour ago",
+//     status: "Called",
+//   },
+//   {
+//     name: "Marvin McKinney",
+//     email: "john@church.com",
+//     phone: "0810 123 4567",
+//     location: "Computer Village",
+//     source: "Whatsapp",
+//     lastLogin: "8 hour ago",
+//     status: "Converted",
+//   },
+//   {
+//     name: "Arlene McCoy",
+//     email: "john@church.com",
+//     phone: "0701 234 5678",
+//     location: "Abule Egba",
+//     source: "Online Event",
+//     lastLogin: "1 day ago",
+//     status: "Messaged",
+//   },
+//   {
+//     name: "Albert Flores",
+//     email: "john@church.com",
+//     phone: "0817 890 1234",
+//     location: "Eko Hotel",
+//     source: "Others",
+//     lastLogin: "30 days ago",
+//     status: "Messaged",
+//   },
+// ];
 
 const Leads = () => {
+  const { data: leadsData } = useReactQuery<Lead[]>(["leads"], "/leads");
+
+  const leads = leadsData?.data.data;
+  console.log(leads);
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
       <div className="flex justify-between items-center mb-4">
@@ -90,34 +96,34 @@ const Leads = () => {
             </tr>
           </thead>
           <tbody>
-            {leads.map((user, index) => (
-              <tr key={index} className="border-b last:border-none">
+            {leads?.map((lead) => (
+              <tr key={lead.id} className="border-b last:border-none">
                 <td className="py-4">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
                       <Users size={16} className="text-green-600" />
                     </div>
                     <div>
-                      <p className="font-medium">{user.name}</p>
+                      <p className="font-medium">{lead.name.fullname}</p>
                       <p className="text-xs text-muted-foreground">
-                        {user.email}
+                        {lead.email}
                       </p>
                     </div>
                   </div>
                 </td>
-                <td>{user.phone}</td>
-                <td>{user.location}</td>
-                <td>{user.source}</td>
-                <td>{user.lastLogin}</td>
+                <td>{lead.phoneNumber}</td>
+                <td className="capitalize">{lead.location.city}</td>
+                <td className="capitalize">{lead.source}</td>
+                <td>{lead.lastLogin || "-"}</td>
                 <td>
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      user.status === "Active"
+                    className={`px-3 py-1 rounded-full capitalize text-xs font-medium ${
+                      lead.status === "Active"
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
                     }`}
                   >
-                    {user.status}
+                    {lead.status}
                   </span>
                 </td>
                 <td className="text-right">

@@ -31,56 +31,7 @@ import StatusTag from "./reusableComponents/StatusTag";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useReactQuery } from "@/src/services/apiHelper";
 import { formatDate, formatNumber } from "@/src/lib/utils";
-
-type StoreInfo<T> = {
-  storeName: T;
-  storeAddress: T;
-  storePhone: T;
-  storeLga: T;
-  storeState: T;
-};
-
-type Location = {
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-};
-
-type User = {
-  id: string;
-  fullname: string;
-  storeInfo: StoreInfo<string>;
-  email: string;
-  phoneNumber: string;
-  location: Location;
-  subscriptionPlan: string;
-  registrationDate: string;
-  businessCategory: string;
-  walletActive: false;
-  status: string;
-  numberOfProducts: number;
-  numberOfCustomers: number;
-};
-
-type Lead = {
-  name: {
-    firstname: string;
-    lastname: string;
-    fullname: string;
-  };
-  location: Location;
-  email: string;
-  phoneNumber: string;
-  language: string;
-  country: string;
-  businessName: string;
-  businessCategory: string;
-  status: string;
-  source: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { Lead, User } from "@/src/lib/types";
 
 const statusTitle = ["all", "messaged", "converted", "called", "follow-up"];
 
@@ -100,8 +51,6 @@ const Overview = () => {
 
   console.log("Leads: ", leads);
   // console.log(status);
-  const leadSources = leads?.map((lead) => lead.source);
-  console.log(leadSources);
 
   return (
     <section className='space-y-7'>
@@ -136,8 +85,8 @@ const Overview = () => {
           <ChartPieInteractive leads={leads || undefined} />
         </div>
       </article>
-      <section className='h-fit px-5 border rounded-md shadow'>
-        <div className='p-8 divide-solid divide-[#EFEFF0] divide-y-2'>
+      <section className='h-fit p-5 border rounded-md shadow bg-white'>
+        <div className='divide-solid divide-[#EFEFF0] divide-y-2'>
           <p className='text-slate-700 font-semibold '>Recent Leads</p>
           <div className='w-full flex flex-col items-end gap-1 mt-5'>
             <Label className='w-[180px]'>Filter by Status</Label>
@@ -164,7 +113,7 @@ const Overview = () => {
             </Select>
           </div>
         </div>
-        <div className='max-h-[500px] p-8 overflow-auto'>
+        <div className='max-h-[500px] overflow-auto'>
           <Table>
             <TableHeader>
               <TableRow className='bg-[#EFEFF0]/45'>
@@ -223,7 +172,7 @@ const Overview = () => {
       </section>
 
       {/* pagination */}
-      <div className='flex justify-center items-center gap-2 mt-6'>
+      {/* <div className='flex justify-center items-center gap-2 mt-6'>
         <button className='p-2 rounded-lg border'>
           <ChevronLeft size={16} />
         </button>
@@ -240,7 +189,7 @@ const Overview = () => {
         <button className='p-2 rounded-lg border'>
           <ChevronRight size={16} />
         </button>
-      </div>
+      </div> */}
     </section>
   );
 };

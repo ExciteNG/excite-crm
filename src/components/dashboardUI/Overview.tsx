@@ -30,56 +30,7 @@ import StatusTag from "./reusableComponents/StatusTag";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useReactQuery } from "@/src/services/apiHelper";
 import { formatDate, formatNumber } from "@/src/lib/utils";
-
-type StoreInfo<T> = {
-  storeName: T;
-  storeAddress: T;
-  storePhone: T;
-  storeLga: T;
-  storeState: T;
-};
-
-type Location = {
-  address: string;
-  city: string;
-  state: string;
-  country: string;
-};
-
-type User = {
-  id: string;
-  fullname: string;
-  storeInfo: StoreInfo<string>;
-  email: string;
-  phoneNumber: string;
-  location: Location;
-  subscriptionPlan: string;
-  registrationDate: string;
-  businessCategory: string;
-  walletActive: false;
-  status: string;
-  numberOfProducts: number;
-  numberOfCustomers: number;
-};
-
-type Lead = {
-  name: {
-    firstname: string;
-    lastname: string;
-    fullname: string;
-  };
-  location: Location;
-  email: string;
-  phoneNumber: string;
-  language: string;
-  country: string;
-  businessName: string;
-  businessCategory: string;
-  status: string;
-  source: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { Lead, User } from "@/src/lib/types";
 
 const statusTitle = ["all", "messaged", "converted", "called", "follow-up"];
 
@@ -97,10 +48,8 @@ const Overview = () => {
   const users = usersData?.data.data;
   const leads = leadsData?.data.data;
 
-  console.log(leads);
+  // console.log(leads);
   // console.log(status);
-  const leadSources = leads?.map((lead) => lead.source);
-  console.log(leadSources);
 
   return (
     <section className="space-y-7">
@@ -202,7 +151,7 @@ const Overview = () => {
                       {row.phoneNumber}
                     </TableCell>
                     <TableCell className="text-center">
-                      {row.location.city} {row.location.state}
+                      {row.location.city}
                     </TableCell>
                     <TableCell className="text-center capitalize">
                       {row.source}

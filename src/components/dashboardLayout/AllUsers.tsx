@@ -1,63 +1,73 @@
+import { User } from "@/src/lib/types";
+import { useReactQuery } from "@/src/services/apiHelper";
 import { MessageCircle, Users } from "lucide-react";
 import React from "react";
-const users = [
-  {
-    name: "Jenny Wilson",
-    email: "john@church.com",
-    phone: "0819 012 3456",
-    location: "Yaba",
-    source: "Facebook",
-    lastLogin: "2 min ago",
-    status: "Active",
-  },
-  {
-    name: "Eleanor Pena",
-    email: "john@church.com",
-    phone: "0901 123 4567",
-    location: "Mushin",
-    source: "Tiktok",
-    lastLogin: "1 hour ago",
-    status: "Active",
-  },
-  {
-    name: "Leslie Alexander",
-    email: "john@church.com",
-    phone: "0704 567 8901",
-    location: "Ajegunle",
-    source: "Youtube",
-    lastLogin: "2 hour ago",
-    status: "Active",
-  },
-  {
-    name: "Marvin McKinney",
-    email: "john@church.com",
-    phone: "0810 123 4567",
-    location: "Computer Village",
-    source: "Whatsapp",
-    lastLogin: "8 hour ago",
-    status: "Active",
-  },
-  {
-    name: "Arlene McCoy",
-    email: "john@church.com",
-    phone: "0701 234 5678",
-    location: "Abule Egba",
-    source: "Online Event",
-    lastLogin: "1 day ago",
-    status: "Active",
-  },
-  {
-    name: "Albert Flores",
-    email: "john@church.com",
-    phone: "0817 890 1234",
-    location: "Eko Hotel",
-    source: "Others",
-    lastLogin: "6 months",
-    status: "Inactive",
-  },
-];
+// const users = [
+//   {
+//     name: "Jenny Wilson",
+//     email: "john@church.com",
+//     phone: "0819 012 3456",
+//     location: "Yaba",
+//     source: "Facebook",
+//     lastLogin: "2 min ago",
+//     status: "Active",
+//   },
+//   {
+//     name: "Eleanor Pena",
+//     email: "john@church.com",
+//     phone: "0901 123 4567",
+//     location: "Mushin",
+//     source: "Tiktok",
+//     lastLogin: "1 hour ago",
+//     status: "Active",
+//   },
+//   {
+//     name: "Leslie Alexander",
+//     email: "john@church.com",
+//     phone: "0704 567 8901",
+//     location: "Ajegunle",
+//     source: "Youtube",
+//     lastLogin: "2 hour ago",
+//     status: "Active",
+//   },
+//   {
+//     name: "Marvin McKinney",
+//     email: "john@church.com",
+//     phone: "0810 123 4567",
+//     location: "Computer Village",
+//     source: "Whatsapp",
+//     lastLogin: "8 hour ago",
+//     status: "Active",
+//   },
+//   {
+//     name: "Arlene McCoy",
+//     email: "john@church.com",
+//     phone: "0701 234 5678",
+//     location: "Abule Egba",
+//     source: "Online Event",
+//     lastLogin: "1 day ago",
+//     status: "Active",
+//   },
+//   {
+//     name: "Albert Flores",
+//     email: "john@church.com",
+//     phone: "0817 890 1234",
+//     location: "Eko Hotel",
+//     source: "Others",
+//     lastLogin: "6 months",
+//     status: "Inactive",
+//   },
+// ];
 
 const AllUsers = () => {
+  const { data: usersData } = useReactQuery<User[]>(
+    ["users"],
+    "/user/excite-users"
+  );
+
+  const users = usersData?.data.data;
+  console.log(users);
+
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
       <div className="flex justify-between items-center mb-4">
@@ -89,7 +99,7 @@ const AllUsers = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user, index) => (
+            {users?.map((user, index) => (
               <tr key={index} className="border-b last:border-none">
                 <td className="py-4">
                   <div className="flex items-center gap-3">
@@ -97,20 +107,22 @@ const AllUsers = () => {
                       <Users size={16} className="text-green-600" />
                     </div>
                     <div>
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="font-medium capitalize">{user.fullname}</p>
+                      <p className="text-xs text-muted-foreground lowercase">
                         {user.email}
                       </p>
                     </div>
                   </div>
                 </td>
-                <td>{user.phone}</td>
-                <td>{user.location}</td>
-                <td>{user.source}</td>
-                <td>{user.lastLogin}</td>
+                <td>{user.phoneNumber}</td>
+                <td className="capitalize">
+                  {user.location.lga} {user.location.state}
+                </td>
+                <td>{user.source || "-"}</td>
+                <td>{user.lastLogin || "-"}</td>
                 <td>
                   <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    className={`px-3 py-1 rounded-full capitalize text-xs font-medium ${
                       user.status === "Active"
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"

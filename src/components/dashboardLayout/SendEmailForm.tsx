@@ -42,6 +42,7 @@ import { Button } from "../ui/button";
 // } from "@/store/services/api/newsletter";
 import { toast } from "sonner";
 import CircularProgress from "../ui/circular-progress";
+import { useReactMutation } from "@/src/services/apiHelper";
 
 interface Props {
   selectedEmails: string[];
@@ -139,7 +140,7 @@ export default function SendEmailForm({
   const [previewModal, setPreviewModal] = useState(false);
   const [previewReady, setPreviewReady] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [statusUpdate, setStausUpdate] = useState<
+  const [statusUpdate, setStatusUpdate] = useState<
     {
       email: string;
       status: string;
@@ -185,17 +186,19 @@ export default function SendEmailForm({
       console.log("Connecting to socket: ", socket.id);
       setSocketId(socket.id as string);
     });
+    console.log("Hello");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket.on("email-status", (data: any) => {
-      // console.log("status update: ", data);
+      console.log("status update: ", data);
       setProgress((prev) => ({ ...prev, current: prev.current + 1 }));
-      setStausUpdate((prev) => [...prev, data]);
+      setStatusUpdate((prev) => [...prev, data]);
     });
+    console.log("Hi");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket.on("email-completed", (data: any) => {
-      // console.log("completd", data);
+      console.log("completed", data);
       setIsSendingBack(false);
     });
 
@@ -387,6 +390,17 @@ export default function SendEmailForm({
     setAttachmentFile(e.target.files?.[0]);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { mutate } = useReactMutation<any, any>(
+    `/newsletter/bulk/send/agenda`,
+    "post"
+  );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { mutate: mutatePreview } = useReactMutation<any, any>(
+    `/newsletter/preview`,
+    "post"
+  );
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSending(true);
@@ -449,6 +463,18 @@ export default function SendEmailForm({
     try {
       // const response = await sendBulkMail({ data: formData }).unwrap();
       // toast.success(response.message);
+      mutate(formData, {
+        onSuccess: ({ data }) => {
+          console.log("Success data: ", data);
+
+          toast.success("Success", { description: data?.message });
+        },
+        onError: (err) => {
+          toast.error("Error", {
+            description: err?.response?.data?.message || "Something went wrong",
+          });
+        },
+      });
       setIsSendingBack(true);
       setFormInputs((prev) => ({
         ...prev,
@@ -497,6 +523,18 @@ export default function SendEmailForm({
       // const response = await previewNewsletter({ data: formData }).unwrap();
       // console.log(response);
       // setPreview(response.data);
+      mutatePreview(formData, {
+        onSuccess: ({ data }) => {
+          console.log("Success data: ", data);
+          toast.success("Success", { description: data?.message });
+          setPreview(data.data);
+        },
+        onError: (err) => {
+          toast.error("Error", {
+            description: err?.response?.data?.message || "Something went wrong",
+          });
+        },
+      });
     } catch (error) {
       console.log("error");
       console.log(error);
@@ -538,7 +576,7 @@ export default function SendEmailForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-3 w-full md:w-3/4"
+      className="bg-white p-6 flex flex-col gap-3 w-full md:w-3/4"
     >
       <div className="w-full grid grid-cols-2 gap-4 items-center ">
         <div className="flex flex-col gap-2">

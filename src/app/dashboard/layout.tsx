@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/src/components/dashboardLayout/Header";
 import SideNav from "@/src/components/dashboardLayout/SideNav";
-import FootPagination from "@/src/components/dashboardLayout/FootPagination";
+// import FootPagination from "@/src/components/dashboardLayout/FootPagination";
 
 export const metadata: Metadata = {
   title: "Excite Enterprise CRM Dashboard",
@@ -23,6 +23,12 @@ export default function DashboardLayout({
           <nav className="h-12 border w-full">
             <Header />
           </nav>
+          <section
+            className={`antialiased h-[calc(100vh-48px)] overflow-y-auto px-4 pb-4 bg-slate-100/65`}
+          >
+            {children}
+          </section>
+          {/* <footer className="h-12 bg-white">
           <section
             className={`antialiased h-[calc(100vh-96px)] overflow-y-auto px-4 pb-4 bg-slate-100/65`}
           >

@@ -182,7 +182,11 @@ export default function FetchEmailsSideBar({
   // console.log(queryParams);
 
   return (
+<<<<<<< HEAD
     <div className="border bg-white px-2 py-4 w-full md:w-1/4">
+=======
+    <div className="border w-full md:w-1/4 p-2.5">
+>>>>>>> main
       {/* <div className="flex justify-end pb-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -297,7 +301,7 @@ export default function FetchEmailsSideBar({
         type="text"
         id="email"
         placeholder="Search Email..."
-        className="border w-full p-1 rounded-sm"
+        className="border w-full px-2.5 py-1.5 rounded-sm placeholder:text-sm focus:outline-none"
         onChange={searchEmail}
       />
       <Select
@@ -400,7 +404,7 @@ export default function FetchEmailsSideBar({
           />
           <label
             htmlFor="Select All"
-            className="text-sm font-medium cursor-pointer leading-none peer-disabled:cursor-not-allowed"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed"
           >
             Select All
           </label>
@@ -408,7 +412,7 @@ export default function FetchEmailsSideBar({
 
         <button
           onClick={fetchEmails}
-          className="px-2 py-1 flex items-center gap-1 bg-green-600 text-white text-sm rounded-lg"
+          className="cursor-pointer px-2 py-1 flex items-center gap-1 bg-green-600 text-white text-sm rounded-lg"
         >
           <RefreshCcw size={16} /> Refresh
         </button>

@@ -46,3 +46,15 @@ export const tableContent = [
   },
 ];
 export const status = ["messaged", "converted", "called", "follow-up"];
+
+export const statusOptions = ["all", "active", "pending", "dormant"];
+
+export const userManagementTableHeader = [
+  "user",
+  "phone number",
+  "location",
+  "source",
+  "last login",
+  "status",
+  " ",
+];

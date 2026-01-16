@@ -1,7 +1,28 @@
-import React from "react";
-import { Users } from "lucide-react";
+import React, { useState } from "react";
+import { MessageCircle, Users } from "lucide-react";
 import { Lead } from "@/src/lib/types";
 import { useReactQuery } from "@/src/services/apiHelper";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { statusOptions, userManagementTableHeader } from "@/src/lib/contents";
+import StatusBadge from "../dashboardUI/reusableComponents/StatusBadge";
+import { Button } from "../ui/button";
+import { UserStatus } from "./AllUsers";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 // const leads = [
 //   {
@@ -61,10 +82,20 @@ import { useReactQuery } from "@/src/services/apiHelper";
 // ];
 
 const Leads = () => {
+  const [status, setStatus] = useState<UserStatus | "all">("all");
   const { data: leadsData } = useReactQuery<Lead[]>(["leads"], "/leads");
 
   const leads = leadsData?.data.data;
   console.log(leads);
+
+  // filter users by status
+  const filteredLeads = leads?.filter((lead) => {
+    if (status.toLowerCase() === "all") return leads;
+    else {
+      return lead.status.toLowerCase() === status.toLowerCase();
+    }
+  });
+
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6">
       <div className="flex justify-between items-center mb-4">
@@ -74,80 +105,101 @@ const Leads = () => {
             Registered leads and their status
           </p>
         </div>
-        <select className="border rounded-lg px-3 py-2 text-sm">
-          <option>All Status</option>
-          <option>Active</option>
-          <option>Inactive</option>
-        </select>
+
+        <Select
+          value={status}
+          onValueChange={(value) => setStatus(value as UserStatus | "all")}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Status</SelectLabel>
+              {statusOptions.map((status) => (
+                <SelectItem key={status} value={status} className="capitalize">
+                  {status.charAt(0).toUpperCase() +
+                    status.slice(1).toLowerCase()}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead className="text-left text-muted-foreground border-b">
-            <tr>
-              <th className="py-3">User</th>
-              <th>Phone Number</th>
-              <th>Location</th>
-              <th>Source</th>
-              <th>Last Login</th>
-              <th>Status</th>
-              <th className="text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {leads?.map((lead) => (
-              <tr key={lead.id} className="border-b last:border-none">
-                <td className="py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
-                      <Users size={16} className="text-green-600" />
-                    </div>
-                    <div>
-                      <p className="font-medium">{lead.name.fullname}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {lead.email}
-                      </p>
-                    </div>
-                  </div>
-                </td>
-                <td>{lead.phoneNumber}</td>
-                <td className="capitalize">{lead.location.city}</td>
-                <td className="capitalize">{lead.source}</td>
-                <td>{lead.lastLogin || "-"}</td>
-                <td>
-                  <span
-                    className={`px-3 py-1 rounded-full capitalize text-xs font-medium ${
-                      lead.status === "Active"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {lead.status}
-                  </span>
-                </td>
-                <td className="text-right">
-                  {/* {tab === "users" ? (
-                    <button className="inline-flex items-center gap-2 border rounded-lg px-3 py-2 text-sm hover:bg-muted">
-                      <MessageCircle size={16} /> Message User
-                    </button>
-                  ) : (
-                    <button className="inline-flex items-center gap-2 border rounded-lg px-3 py-2 text-sm hover:bg-muted">
-                      Change status
-                    </button>
-                  )} */}
-                  <button className="inline-flex items-center gap-2 border rounded-lg px-3 py-2 text-sm hover:bg-muted">
-                    Change status
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
 
-      {/* Pagination */}
-      {/* <div className="flex justify-center items-center gap-2 mt-6">
+      <Table>
+        <TableHeader>
+          <TableRow className="bg-muted/50">
+            {userManagementTableHeader.map((header: string) => (
+              <TableHead
+                key={header}
+                className="capitalize text-center text-[#4F4F4F]"
+              >
+                {header}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredLeads?.map((lead, index) => {
+            return (
+              <TableRow key={index} className="">
+                <TableCell className="flex items-center justify-start pl-10 gap-x-3">
+                  <div className="bg-green-100 w-9 aspect-square rounded-full flex justify-center items-center">
+                    <Users size={16} className="text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium capitalize">
+                      {lead.name.fullname}
+                    </p>
+                    <p className="text-xs text-muted-foreground lowercase">
+                      {lead.email}
+                    </p>
+                  </div>
+                </TableCell>
+
+                <TableCell className="text-center w-32">
+                  {lead.phoneNumber}
+                </TableCell>
+                <TableCell className="text-center capitalize w-32">
+                  {lead.location.lga} {lead.location?.state}
+                </TableCell>
+                <TableCell className="text-center capitalize w-32">
+                  {lead.source || "-"}
+                </TableCell>
+                <TableCell className="text-center w-32">
+                  {lead.lastLogin || "-"}
+                </TableCell>
+                <TableCell className="text-center capitalize w-32">
+                  <StatusBadge status={lead.status as UserStatus} />
+                </TableCell>
+
+                <TableCell className="text-center capitalize w-32">
+                  <Button
+                    variant={"outline"}
+                    className="inline-flex border border-secondary items-center gap-2 focus:ring ring-secondary rounded-lg px-3 py-2 text-xs capitalize hover:bg-secondary hover:text-background cursor-pointer"
+                  >
+                    change status
+                  </Button>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
+export default Leads;
+
+{
+  /* Pagination */
+}
+{
+  /* <div className="flex justify-center items-center gap-2 mt-6">
           <button className="p-2 rounded-lg border">
             <ChevronLeft size={16} />
           </button>
@@ -166,9 +218,5 @@ const Leads = () => {
           <button className="p-2 rounded-lg border">
             <ChevronRight size={16} />
           </button>
-        </div> */}
-    </div>
-  );
-};
-
-export default Leads;
+        </div> */
+}

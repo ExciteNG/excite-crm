@@ -119,7 +119,6 @@ export default function FetchEmailsSideBar({
   };
 
   const handleSelectAll = (value: boolean | string) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     // emailList && (value || value === "true")
     //   ? setSelectedEmails(emailList.data.map((data) => data.email))
     //   : setSelectedEmails([]);
@@ -182,11 +181,7 @@ export default function FetchEmailsSideBar({
   // console.log(queryParams);
 
   return (
-<<<<<<< HEAD
-    <div className="border bg-white px-2 py-4 w-full md:w-1/4">
-=======
     <div className="border w-full md:w-1/4 p-2.5">
->>>>>>> main
       {/* <div className="flex justify-end pb-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>

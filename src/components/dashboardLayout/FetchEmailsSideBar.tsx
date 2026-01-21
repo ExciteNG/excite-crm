@@ -181,7 +181,7 @@ export default function FetchEmailsSideBar({
   // console.log(queryParams);
 
   return (
-    <div className="border w-full md:w-1/4 p-2.5">
+    <div className="bg-background h-full w-full border p-2.5 md:w-1/4">
       {/* <div className="flex justify-end pb-2">
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -296,7 +296,7 @@ export default function FetchEmailsSideBar({
         type="text"
         id="email"
         placeholder="Search Email..."
-        className="border w-full px-2.5 py-1.5 rounded-sm placeholder:text-sm focus:outline-none"
+        className="w-full rounded-sm border px-2.5 py-1.5 placeholder:text-sm focus:outline-none"
         onChange={searchEmail}
       />
       <Select
@@ -391,7 +391,7 @@ export default function FetchEmailsSideBar({
           </SelectGroup>
         </SelectContent>
       </Select>
-      <div className="flex items-center justify-between space-x-2 mt-3">
+      <div className="mt-3 flex items-center justify-between space-x-2">
         <div className="inline-flex items-center space-x-1">
           <Checkbox
             id="Select All"
@@ -399,7 +399,7 @@ export default function FetchEmailsSideBar({
           />
           <label
             htmlFor="Select All"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed"
+            className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed"
           >
             Select All
           </label>
@@ -407,7 +407,7 @@ export default function FetchEmailsSideBar({
 
         <button
           onClick={fetchEmails}
-          className="cursor-pointer px-2 py-1 flex items-center gap-1 bg-green-600 text-white text-sm rounded-lg"
+          className="flex cursor-pointer items-center gap-1 rounded-lg bg-green-600 px-2 py-1 text-sm text-white"
         >
           <RefreshCcw size={16} /> Refresh
         </button>

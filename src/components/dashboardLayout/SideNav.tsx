@@ -12,18 +12,21 @@ import { PiSignOutBold } from "react-icons/pi";
 export default function SideNav() {
   const pathName = usePathname();
   const router = useRouter();
+
   return (
-    <aside className="h-screen flex flex-col justify-between items-center bg-secondary">
+    <aside className="sticky top-0 h-screen flex flex-col justify-between items-center bg-secondary py-5">
       <div className="space-y-8">
         <Logo size={20} />
-        <nav className="flex flex-col gap-y-1">
+        <nav className="flex flex-col gap-y-2">
           {sidePortals.map((portal) => (
             <Link
               href={portal.link}
               key={portal.tabName}
               className={`text-secondary-foreground flex items-center w-full rounded-lg gap-x-2.5 px-3 py-2 ${
-                pathName === portal.link ? "bg-primary" : undefined
-              }`}
+                pathName === portal.link
+                  ? "bg-primary hover:bg-secondary"
+                  : "hover:bg-primary"
+              } `}
             >
               <portal.icon />
               <span>{portal.tabName}</span>
@@ -37,7 +40,7 @@ export default function SideNav() {
           router.replace("/");
         }}
         variant={"destructive"}
-        className="capitalize space-x-1 mb-10"
+        className="capitalize space-x-1 cursor-pointer"
       >
         <PiSignOutBold />
         <span>sign out</span>

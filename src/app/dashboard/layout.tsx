@@ -16,15 +16,3 @@ export default function DashboardLayout({
 }>) {
   return <Main>{children}</Main>;
 }
-
-/* 
-
-<main className="w-screen h-screen">
-      <SideNav />
-
-      <section className="h-screen w-4/5">
-        <Header />
-
-        {children}
-      </section>
-    </main>*/

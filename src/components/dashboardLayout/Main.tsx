@@ -10,9 +10,9 @@ export default function Main({
   return (
     <main className="grid grid-cols-[200px_1fr]">
       <SideNav />
-      <div className="">
+      <div className="divide-muted divide-y-2 divide-solid">
         <Header />
-        <section>{children}</section>
+        <main className="bg-slate-100/65">{children}</main>
       </div>
     </main>
   );

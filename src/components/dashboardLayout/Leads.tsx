@@ -86,7 +86,7 @@ const Leads = () => {
   const { data: leadsData } = useReactQuery<Lead[]>(["leads"], "/leads");
 
   const leads = leadsData?.data.data;
-  console.log(leads);
+  // console.log(leads);
 
   // filter users by status
   const filteredLeads = leads?.filter((lead) => {

@@ -1,17 +1,54 @@
-'use client'
-import React from 'react';
-import { usePathname } from 'next/navigation';
-import Link from 'next/link';
-import Image from 'next/image';
-import exciteLogo from "../../../public/assets/svgFiles/exciteLogo.svg";
-import sidePortals from '@/src/lib/sideLinks';
+"use client";
+
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+
+import Logo from "../Logo";
+import { Button } from "../ui/button";
+
+import { sidePortals } from "@/src/lib/contents";
 import { PiSignOutBold } from "react-icons/pi";
 
-
-const SideNav = () => {
+export default function SideNav() {
   const pathName = usePathname();
+  const router = useRouter();
   return (
-    <article className='text-slate-300 w-full h-full'>
+    <aside className="h-screen flex flex-col justify-between items-center bg-secondary">
+      <div className="space-y-8">
+        <Logo size={20} />
+        <nav className="flex flex-col gap-y-1">
+          {sidePortals.map((portal) => (
+            <Link
+              href={portal.link}
+              key={portal.tabName}
+              className={`text-secondary-foreground flex items-center w-full rounded-lg gap-x-2.5 px-3 py-2 ${
+                pathName === portal.link ? "bg-primary" : undefined
+              }`}
+            >
+              <portal.icon />
+              <span>{portal.tabName}</span>
+            </Link>
+          ))}
+        </nav>
+      </div>
+      <Button
+        onClick={() => {
+          /* ===== handle logout logic ===== */
+          router.replace("/");
+        }}
+        variant={"destructive"}
+        className="capitalize space-x-1 mb-10"
+      >
+        <PiSignOutBold />
+        <span>sign out</span>
+      </Button>
+    </aside>
+  );
+}
+
+/* 
+
+ <article className='text-slate-300 w-full h-full'>
       <div className='w-full flex items-center justify-center py-5'>
         <Image src={exciteLogo} alt='logo' />
       </div>
@@ -39,7 +76,4 @@ const SideNav = () => {
         </Link>
       </div>
     </article>
-  );
-}
-
-export default SideNav
+*/

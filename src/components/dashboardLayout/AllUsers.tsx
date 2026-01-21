@@ -94,7 +94,7 @@ const AllUsers = () => {
   );
 
   const users = usersData?.data.data;
-  console.log(status);
+  // console.log(status);
 
   // filter users by status
   const filteredUsers = users?.filter((user) => {

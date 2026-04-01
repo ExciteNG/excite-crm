@@ -10,14 +10,14 @@ const NewsletterPage = () => {
     "usmandenaro13@gmail.com",
   ]);
   return (
-    <div className="p-6 space-y-6 h-full overflow-y-auto">
+    <div className="h-full space-y-6 overflow-y-auto p-6">
       <div>
-        <h4 className="text-2xl font-bold text-[#151413]">Newsletter</h4>
+        <h1 className="text-secondary text-2xl font-bold">Newsletter</h1>
         <p className="text-sm text-[#433F3E]">
           Follow-up with your customers on recently product.
         </p>
       </div>
-      <div className="w-full pb-5 mt-10 flex flex-col md:flex-row gap-3">
+      <div className="mt-10 flex w-full flex-col justify-center gap-3 pb-5 md:flex-row">
         <SendEmailForm
           selectedEmails={selectedEmails}
           setSelectedEmails={setSelectedEmails}

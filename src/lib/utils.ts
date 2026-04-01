@@ -171,7 +171,9 @@ export function toUtcMidnightISOString(date: Date): string {
 export function formatDate(iso: string): string {
   const date = new Date(iso);
   const day = date.getDate();
-  const month = date.toLocaleString("en-GB", { month: "long" });
+  const month = date.toLocaleString("en-GB", {
+    month: "long",
+  });
   const year = date.getFullYear();
 
   const getOrdinal = (n: number) => {

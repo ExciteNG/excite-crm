@@ -8,8 +8,8 @@ export default function StatusBadge({ status }: { status: UserStatus }) {
         status.toLowerCase() === "active"
           ? "default"
           : status.toLowerCase() === "pending"
-          ? "pending"
-          : "destructive"
+            ? "pending"
+            : "destructive"
       }`}
       className={`px-3 py-1.5 rounded-full w-fit text-xs font-medium  `}
     >

@@ -1,6 +1,6 @@
 import { User } from "@/src/lib/types";
 import { useReactQuery } from "@/src/services/apiHelper";
-import { MessageCircle, Users } from "lucide-react";
+import { MessageCircle, User as UserIcon } from "lucide-react";
 import React, { ChangeEvent, useState } from "react";
 import {
   Table,
@@ -23,8 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import StatusTag from "../dashboardUI/reusableComponents/StatusTag";
 import StatusBadge from "../dashboardUI/reusableComponents/StatusBadge";
+import { Label } from "@/src/components/ui/label";
 
 // const users = [
 //   {
@@ -90,11 +90,12 @@ const AllUsers = () => {
 
   const { data: usersData } = useReactQuery<User[]>(
     ["users"],
-    "/user/excite-users"
+    "/user/excite-users",
   );
 
   const users = usersData?.data.data;
-  console.log(status);
+  // console.log(status);
+  console.log(users);
 
   // filter users by status
   const filteredUsers = users?.filter((user) => {
@@ -104,144 +105,101 @@ const AllUsers = () => {
     }
   });
 
-  // console.log(filteredUsers);
+  console.log(filteredUsers);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm p-6">
-      <div className="flex justify-between items-center mb-4">
-        <div>
-          <h2 className="font-semibold text-lg">All Users</h2>
-          <p className="text-sm text-muted-foreground">
-            Registered users and their activity status
-          </p>
+    <>
+    <div className="rounded-sm bg-background p-6 shadow-sm">
+       <div className="flex justify-between w-full ">
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col w-full">
+            <h2 className="text-lg font-semibold">Users</h2>
+            <p className="text-muted-foreground text-sm font-light">
+              Registered users and activity status
+            </p>
+          </div>
         </div>
 
-        <Select
-          value={status}
-          onValueChange={(value) => setStatus(value as UserStatus | "all")}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Status</SelectLabel>
-              {statusOptions.map((status) => (
-                <SelectItem key={status} value={status} className="capitalize">
-                  {status.charAt(0).toUpperCase() +
-                    status.slice(1).toLowerCase()}
+        <div className="flex flex-col items-end gap-1 my-2.5">
+          <Label className="w-[180px]">Filter by Status</Label>
+          <Select
+            value={status}
+            onValueChange={(value) => setStatus(value as UserStatus | "all")}
+          >
+            <SelectTrigger
+              className="ml-auto h-7 w-[180px] rounded-lg pl-2.5"
+              aria-label="Select a value"
+            >
+              <SelectValue placeholder="All Status" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl">
+              {statusOptions.map((status, index) => (
+                <SelectItem value={status} key={index} className="capitalize">
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
                 </SelectItem>
               ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <Table>
+      <div className="max-h-[300px] h-full overflow-y-auto relative">
+        <Table className="w-full">
           <TableHeader>
-            <TableRow className="bg-muted/50">
+            <TableRow>
               {userManagementTableHeader.map((header: string) => (
                 <TableHead
                   key={header}
-                  className="capitalize text-center text-[#4F4F4F]"
+                  className="sticky top-0 z-10 bg-secondary capitalize text-center text-primary-foreground"
                 >
                   {header}
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {filteredUsers?.map((user, index) => {
-              return (
-                <TableRow key={index} className="">
-                  <TableCell className="flex items-center justify-start pl-10 gap-x-3">
-                    <div className="bg-green-100 w-9 aspect-square rounded-full flex justify-center items-center">
-                      <Users size={16} className="text-green-600" />
-                    </div>
-                    <div className="">
-                      <p className="font-medium capitalize">{user.fullname}</p>
-                      <p className="text-xs text-muted-foreground lowercase">
-                        {user.email}
-                      </p>
-                    </div>
-                  </TableCell>
 
-                  <TableCell className="text-center w-32">
-                    {user.phoneNumber}
-                  </TableCell>
-                  <TableCell className="text-center capitalize w-32">
-                    {user.location.lga} {user.location?.state}
-                  </TableCell>
-                  <TableCell className="text-center capitalize w-32">
-                    {user.source || "-"}
-                  </TableCell>
-                  <TableCell className="text-center w-32">
-                    {user.lastLogin || "-"}
-                  </TableCell>
-                  <TableCell className="text-center capitalize w-32">
-                    <StatusBadge status={user.status as UserStatus} />
-                  </TableCell>
+          <TableBody className="divide-y divide-secondary/15">
+            {filteredUsers?.map((user) => (
+              <TableRow
+                key={user.id}
+              >
+                <TableCell className="px-2.5 flex items-center gap-2.5">
+                  <div className="bg-primary/50 w-fit rounded-full p-2">
+                    <UserIcon size={16} className="text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-left">{user.fullname}</p>
+                    <p className="font-light">{user.email}</p>
+                  </div>
+                </TableCell>
 
-                  <TableCell className="text-center capitalize w-32">
-                    <Button
-                      variant={"outline"}
-                      className="inline-flex border border-secondary items-center gap-2 focus:ring ring-secondary rounded-lg px-3 py-2 text-xs capitalize hover:bg-secondary hover:text-background cursor-pointer"
-                    >
-                      <MessageCircle size={16} />
-                      <span className="text-xs capitalize">Message user</span>
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                <TableCell>{user.phoneNumber}</TableCell>
+                <TableCell>
+                  {user.location.lga} {user.location?.state}
+                </TableCell>
+                <TableCell>{user.source || "-"}</TableCell>
+                <TableCell>{user.lastLogin || "-"}</TableCell>
+
+                <TableCell>
+                  <StatusBadge status={user.status as UserStatus} />
+                </TableCell>
+
+                <TableCell>
+                  <Button
+                    variant="outline"
+                    className="border-secondary ring-secondary hover:bg-secondary hover:text-background inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs capitalize"
+                  >
+                    <MessageCircle size={16} />
+                    Message user
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
-
-      {/* Pagination */}
-      {/* <div className="flex justify-center items-center gap-2 mt-6">
-          <button className="p-2 rounded-lg border">
-            <ChevronLeft size={16} />
-          </button>
-          {[1, 2, 3, 4, 5].map((page) => (
-            <button
-              key={page}
-              className={`w-9 h-9 rounded-lg text-sm font-medium ${
-                page === 1
-                  ? "bg-yellow-400 text-black"
-                  : "border hover:bg-muted"
-              }`}
-            >
-              {page}
-            </button>
-          ))}
-          <button className="p-2 rounded-lg border">
-            <ChevronRight size={16} />
-          </button>
-        </div> */}
     </div>
-  );
-};
+      {/* <div className="w-full bg-secondary h-10"></div> */}
+    </>
+  )}
 
 export default AllUsers;
-
-{
-  /* <TableHead className="text-center text-[#4F4F4F">
-                phone number
-              </TableHead>
-              <TableHead className="text-center text-[#4F4F4F">
-                location
-              </TableHead>
-              <TableHead className="text-center text-[#4F4F4F">
-                source
-              </TableHead>
-              <TableHead className="text-center text-[#4F4F4F">
-                last login
-              </TableHead>
-              <TableHead className="text-center text-[#4F4F4F">
-                status
-              </TableHead>
-              <TableHead className="text-[#4F4F4F">actions</TableHead> */
-}

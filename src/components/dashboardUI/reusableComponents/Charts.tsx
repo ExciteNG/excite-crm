@@ -110,32 +110,32 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ChartBarDefault() {
+export function ChartBar() {
   const [activeYear, setActiveYear] = React.useState("2022");
   const chartData =
     chartDataByYear[activeYear as unknown as keyof typeof chartDataByYear];
   const years = Object.keys(chartDataByYear);
 
   return (
-    <Card className='w-full'>
-      <CardHeader className='flex justify-between items-center'>
-        <div className='space-y-1.5'>
+    <Card className="w-full">
+      <CardHeader className="flex items-center justify-between">
+        <div className="space-y-1.5">
           <CardTitle>Monthly Sign-ups</CardTitle>
           <CardDescription>Signup breakdown</CardDescription>
         </div>
         <Select value={activeYear} onValueChange={setActiveYear}>
           <SelectTrigger
-            className='ml-auto h-7 w-[130px] rounded-lg pl-2.5'
-            aria-label='Select a year'
+            className="ml-auto h-7 w-[130px] rounded-lg pl-2.5"
+            aria-label="Select a year"
           >
-            <SelectValue placeholder='Select year' />
+            <SelectValue placeholder="Select year" />
           </SelectTrigger>
-          <SelectContent align='end'>
+          <SelectContent align="end">
             {years.map((year) => (
-              <SelectItem key={year} value={year} className='rounded-lg'>
-                <div className='flex items-center gap-2 text-xs'>
+              <SelectItem key={year} value={year} className="rounded-lg">
+                <div className="flex items-center gap-2 text-xs">
                   <span
-                    className='flex h-3 w-3 shrink-0 rounded-xs'
+                    className="flex h-3 w-3 shrink-0 rounded-xs"
                     style={{
                       backgroundColor: "#A7CC48",
                     }}
@@ -147,12 +147,12 @@ export function ChartBarDefault() {
           </SelectContent>
         </Select>
       </CardHeader>
-      <CardContent className='w-full'>
-        <ChartContainer config={chartConfig} className='h-[200px] w-full'>
+      <CardContent className="w-full">
+        <ChartContainer config={chartConfig} className="h-[200px] w-full">
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='month'
+              dataKey="month"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -162,7 +162,7 @@ export function ChartBarDefault() {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey='users' fill='var(--color-users)' radius={8} />
+            <Bar dataKey="users" fill="var(--color-users)" radius={8} />
           </BarChart>
         </ChartContainer>
       </CardContent>
@@ -223,7 +223,7 @@ const sourceLabels: Record<string, string> = {
   other: "Other",
 };
 
-export function ChartPieInteractive({ leads }: { leads?: Lead[] }) {
+export function ChartPie({ leads }: { leads?: Lead[] }) {
   const id = "pie-interactive";
 
   const pieData = React.useMemo(() => {
@@ -245,7 +245,7 @@ export function ChartPieInteractive({ leads }: { leads?: Lead[] }) {
   }, [leads]);
 
   const [activeSource, setActiveSource] = React.useState(
-    pieData[0]?.source || ""
+    pieData[0]?.source || "",
   );
 
   const pieChartConfig = React.useMemo(() => {
@@ -268,7 +268,7 @@ export function ChartPieInteractive({ leads }: { leads?: Lead[] }) {
 
   const activeIndex = React.useMemo(
     () => pieData.findIndex((item) => item.source === activeSource),
-    [activeSource, pieData]
+    [activeSource, pieData],
   );
 
   React.useEffect(() => {
@@ -279,32 +279,32 @@ export function ChartPieInteractive({ leads }: { leads?: Lead[] }) {
 
   if (!pieData || pieData.length === 0) {
     return (
-      <Card className='flex flex-col'>
-        <CardHeader className='flex-row items-start space-y-0 pb-0'>
-          <div className='grid gap-1'>
+      <Card className="flex w-full flex-col">
+        <CardHeader className="flex-row items-start space-y-0 pb-0">
+          <div className="grid gap-1">
             <CardTitle>Lead Sources</CardTitle>
           </div>
         </CardHeader>
-        <CardContent className='px-0 pb-0 flex items-center justify-center h-[220px]'>
-          <p className='text-muted-foreground'>No leads data available</p>
+        <CardContent className="flex h-[220px] items-center justify-center px-0 pb-0">
+          <p className="text-muted-foreground">No leads data available</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card data-chart={id} className='flex flex-col'>
+    <Card data-chart={id} className="flex flex-col">
       <ChartStyle id={id} config={pieChartConfig} />
-      <CardHeader className='flex-row items-start space-y-0 pb-0'>
-        <div className='grid gap-1'>
+      <CardHeader className="flex-row items-start space-y-0 pb-0">
+        <div className="grid gap-1">
           <CardTitle>Lead Sources</CardTitle>
         </div>
       </CardHeader>
-      <CardContent className='p-5 flex items-center gap-4 h-[220px]'>
+      <CardContent className="flex h-[220px] items-center gap-4 p-5">
         <ChartContainer
           id={id}
           config={pieChartConfig}
-          className='w-full max-w-[180px] h-40'
+          className="h-40 w-full max-w-[180px]"
         >
           <PieChart>
             <ChartTooltip
@@ -313,8 +313,8 @@ export function ChartPieInteractive({ leads }: { leads?: Lead[] }) {
             />
             <Pie
               data={pieData}
-              dataKey='count'
-              nameKey='source'
+              dataKey="count"
+              nameKey="source"
               innerRadius={45}
               strokeWidth={5}
               activeIndex={activeIndex}
@@ -341,20 +341,20 @@ export function ChartPieInteractive({ leads }: { leads?: Lead[] }) {
                       <text
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        textAnchor='middle'
-                        dominantBaseline='middle'
+                        textAnchor="middle"
+                        dominantBaseline="middle"
                       >
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className='fill-foreground text-3xl font-bold'
+                          className="fill-foreground text-3xl font-bold"
                         >
                           {count.toLocaleString()}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
-                          className='fill-muted-foreground text-xs'
+                          className="fill-muted-foreground text-xs"
                         >
                           {sourceLabels[source] || source}
                         </tspan>
@@ -367,11 +367,11 @@ export function ChartPieInteractive({ leads }: { leads?: Lead[] }) {
           </PieChart>
         </ChartContainer>
         <section>
-          <ul className='space-y-2 text-slate-700 max-h-[220px] overflow-y-auto'>
+          <ul className="max-h-[220px] space-y-2 overflow-y-auto text-slate-700">
             {pieData.map((item) => (
-              <li key={item.source} className='flex items-center gap-2'>
-                <GoDotFill className='shrink-0' style={{ color: item.fill }} />
-                <span className='text-xs'>
+              <li key={item.source} className="flex items-center gap-2">
+                <GoDotFill className="shrink-0" style={{ color: item.fill }} />
+                <span className="text-xs">
                   {sourceLabels[item.source] || item.source} ({item.count})
                 </span>
               </li>

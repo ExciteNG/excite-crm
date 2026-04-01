@@ -47,6 +47,15 @@ export default function OverviewPage() {
   const users = usersData?.data.data;
   const leads = leadsData?.data.data;
 
+    const filteredLeads = leads?.filter((lead) => {
+    if (status.toLowerCase() === "all") {
+      return leads;
+    }
+    return lead.status.toLowerCase() === status.toLowerCase();
+  });
+
+  console.log(filteredLeads)
+
   return (
     <section className="space-y-7 p-5">
       <section className="grid grid-cols-3 gap-5">
@@ -82,7 +91,7 @@ export default function OverviewPage() {
         </h2>
         <section className="place-items-end space-y-2">
           <h3 className="w-36 font-medium">Filter by status</h3>
-          <Select value={status}>
+          <Select value={status} onValueChange={(value) => setStatus(value as Status | "all")}>
             <SelectTrigger className="w-36" aria-label="Select a value">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
@@ -121,29 +130,29 @@ export default function OverviewPage() {
               </TableRow>
             </TableHeader>
             <TableBody className="h-full max-h-dvh overflow-scroll">
-              {leads?.map((row, index) => {
+              {filteredLeads?.map((lead, index) => {
                 return (
                   <TableRow key={index} className="h-16">
                     <TableCell className="text-center">
-                      {row.name.fullname}
+                      {lead.name.fullname}
                     </TableCell>
                     <TableCell className="text-center lowercase">
-                      {row.email}
+                      {lead.email}
                     </TableCell>
                     <TableCell className="text-center">
-                      {row.phoneNumber}
+                      {lead.phoneNumber}
                     </TableCell>
                     <TableCell className="text-center">
-                      {row.location.city} {row.location.state}
+                      {lead.location.city} {lead.location.state}
                     </TableCell>
                     <TableCell className="text-center capitalize">
-                      {row.source}
+                      {lead.source}
                     </TableCell>
                     <TableCell className="text-center">
-                      {formatDate(row.createdAt)}
+                      {formatDate(lead.createdAt)}
                     </TableCell>
                     <TableCell>
-                      <StatusTag status={row.status} />
+                      <StatusTag status={lead.status} />
                     </TableCell>
                   </TableRow>
                 );

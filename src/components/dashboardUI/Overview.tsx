@@ -53,7 +53,7 @@ const Overview = () => {
 
   const filteredLeads = leads?.filter((lead) => {
     if (status.toLowerCase() === "all") {
-      return true;
+      return leads;
     }
     return lead.status.toLowerCase() === status.toLowerCase();
   });

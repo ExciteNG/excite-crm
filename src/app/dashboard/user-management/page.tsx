@@ -34,7 +34,9 @@ export default function UserManagementPage() {
           <span className="capitalize">leads</span>
         </Button>
       </div>
+      {/* <div className="max-h-screen h-full"> */}
       {tab === "users" ? <AllUsers /> : <Leads />}
+      {/* </div> */}
     </section>
   );
 }

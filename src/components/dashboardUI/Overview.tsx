@@ -7,8 +7,8 @@ import { HiMiniUserGroup } from "react-icons/hi2";
 import { HiMiniUsers } from "react-icons/hi2";
 import { MdGroupAdd } from "react-icons/md";
 import {
-  ChartBarDefault,
-  ChartPieInteractive,
+  ChartBar,
+  ChartPie,
 } from "./reusableComponents/Charts";
 import {
   Table,
@@ -85,10 +85,10 @@ const Overview = () => {
       </div>
       <article className="flex justify-between">
         <div className="w-3/5">
-          <ChartBarDefault />
+          <ChartBar />
         </div>
         <div className="w-3/8">
-          <ChartPieInteractive leads={leads || undefined} />
+          <ChartPie leads={leads || undefined} />
         </div>
       </article>
       <section className="h-fit p-5 border rounded-md shadow bg-white">

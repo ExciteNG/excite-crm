@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/src/components/ui/select";
 import { GoDotFill } from "react-icons/go";
+import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
 
 export const description = "A bar chart";
 
@@ -223,7 +224,7 @@ const sourceLabels: Record<string, string> = {
   other: "Other",
 };
 
-export function ChartPie({ leads }: { leads?: Lead[] }) {
+export function ChartPie({ leads, isLoading }: { leads: Lead[], isLoading:boolean }) {
   const id = "pie-interactive";
 
   const pieData = React.useMemo(() => {
@@ -277,7 +278,22 @@ export function ChartPie({ leads }: { leads?: Lead[] }) {
     }
   }, [pieData, activeSource]);
 
-  if (!pieData || pieData.length === 0) {
+  if(isLoading){
+    return (
+      <Card className="flex w-full flex-col">
+        <CardHeader className="flex-row items-start space-y-0 pb-0">
+          <div className="grid gap-1">
+            <CardTitle>Lead Sources</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="flex h-[220px] items-center justify-center px-0 pb-0">
+          <Loader size={LoaderSize.normal}/>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!isLoading && pieData.length === 0) {
     return (
       <Card className="flex w-full flex-col">
         <CardHeader className="flex-row items-start space-y-0 pb-0">

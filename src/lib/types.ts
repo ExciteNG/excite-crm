@@ -245,13 +245,11 @@ export type PodcastVlogs = {
 };
 
 export type Query = {
-  provider?: string;
-  sector?: string;
-  platform?: string;
-  userType?: string;
-  institution?: string;
-  isSubscribed?: boolean;
+  status?: string;
+  location?: string;
+  subscriptionPlan?: string;
 };
+
 export type ProspectQuery = {
   page?: number;
   status?: string;

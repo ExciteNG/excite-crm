@@ -137,11 +137,7 @@ const Leads = () => {
           <TableHeader>
             <TableRow>
               {userManagementTableHeader.map((header: string) => (
-                <TableHead
-                  key={header}
-                  className="sticky top-0 z-10 bg-secondary capitalize text-center text-primary-foreground"
-                >
-                  {header}
+                <TableHead key={header} className={`sticky top-0 z-10 bg-secondary capitalize ${header.toLowerCase()==='user'?'text-left px-10':'text-center'} text-primary font-semibold`}>{header}
                 </TableHead>
               ))}
             </TableRow>
@@ -164,7 +160,7 @@ const Leads = () => {
 
                 <TableCell className="text-center capitalize">{lead.phoneNumber}</TableCell>
                 <TableCell className="text-center capitalize">
-                  {lead.location.city}, {lead.location?.state}
+                  {`${lead.location.city}, ${lead.location?.state}`}
                 </TableCell>
                 <TableCell className="text-center capitalize">{lead.source || "-"}</TableCell>
                 <TableCell className="text-center capitalize">{lead.lastLogin || "-"}</TableCell>
@@ -173,13 +169,12 @@ const Leads = () => {
                   <StatusBadge status={lead.status as UserStatus} />
                 </TableCell>
 
-                <TableCell className="text-center capitalize">
+                <TableCell className="text-center">
                   <Button
                     variant="outline"
-                    className="border-secondary ring-secondary hover:bg-secondary hover:text-background inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs capitalize"
+                    className="border-secondary ring-secondary hover:bg-secondary hover:text-background rounded-md border px-3 py-px text-xs capitalize"
                   >
-                    <MessageCircle size={16} />
-                    Message user
+                    change status
                   </Button>
                 </TableCell>
               </TableRow>

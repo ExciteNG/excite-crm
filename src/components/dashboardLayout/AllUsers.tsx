@@ -149,7 +149,7 @@ const AllUsers = () => {
               {userManagementTableHeader.map((header: string) => (
                 <TableHead
                   key={header}
-                  className="sticky top-0 z-10 bg-secondary capitalize text-center text-primary-foreground"
+                  className={`sticky top-0 z-10 bg-secondary capitalize ${header.toLowerCase()==='user'?'text-left px-10':'text-center'} text-primary font-semibold`}
                 >
                   {header}
                 </TableHead>
@@ -157,7 +157,7 @@ const AllUsers = () => {
             </TableRow>
           </TableHeader>
 
-          <TableBody className="divide-y divide-secondary/15">
+          <TableBody className="divide-y-2 divide-primary">
             {filteredUsers?.map((user) => (
               <TableRow
                 key={user.id}
@@ -172,24 +172,23 @@ const AllUsers = () => {
                   </div>
                 </TableCell>
 
-                <TableCell>{user.phoneNumber}</TableCell>
-                <TableCell>
-                  {user.location.lga} {user.location?.state}
+                <TableCell className="text-center">{user.phoneNumber}</TableCell>
+                <TableCell className="text-center">
+                  {`${user.location.lga}, ${user.location?.state}`}
                 </TableCell>
-                <TableCell>{user.source || "-"}</TableCell>
-                <TableCell>{user.lastLogin || "-"}</TableCell>
+                <TableCell className="text-center">{user.source || "-"}</TableCell>
+                <TableCell className="text-center">{user.lastLogin || "-"}</TableCell>
 
-                <TableCell>
+                <TableCell className="text-center">
                   <StatusBadge status={user.status as UserStatus} />
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="text-center">
                   <Button
                     variant="outline"
-                    className="border-secondary ring-secondary hover:bg-secondary hover:text-background inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs capitalize"
+                    className="border-secondary ring-secondary hover:bg-secondary hover:text-background rounded-md border px-3 py-2 text-xs capitalize"
                   >
-                    <MessageCircle size={16} />
-                    Message user
+                    message user
                   </Button>
                 </TableCell>
               </TableRow>

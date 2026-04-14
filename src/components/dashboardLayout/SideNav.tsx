@@ -22,10 +22,10 @@ export default function SideNav() {
             <Link
               href={portal.link}
               key={portal.tabName}
-              className={`text-secondary-foreground flex items-center w-full rounded-lg gap-x-2.5 px-3 py-2 ${
+              className={`text-primary hover:bg-primary flex items-center w-full rounded-sm gap-x-2.5 px-3 py-2 ${
                 pathName === portal.link
-                  ? "bg-primary hover:bg-secondary"
-                  : "hover:bg-primary"
+                  ? "bg-primary text-primary-foreground"
+                  : undefined
               } `}
             >
               <portal.icon />

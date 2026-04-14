@@ -48,27 +48,50 @@ export const reportTemplates = [
   "zenith",
 ];
 
-export const sectors = [
-  "general",
-  "public sector",
-  "manufacturing",
-  "oil & gas",
-  "ICT",
-  "Agriculture",
-  "finance",
-  "fmcg",
+export const locations = [
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "FCT Abuja",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara",
 ];
 
-export const platforms = [
-  "newsteon",
-  "pollteon",
-  "trendteon",
-  "surveyteon",
-  "teonengine",
-  "precise",
-  "business",
-  "esgforum",
-  "prcan",
+export const subscriptionPlans = [
+ "Basic",
+ "Standard",
+ "Premium",
 ];
 
 export const months = [
@@ -201,3 +224,19 @@ export function localDateFromUtcISOString(utcString: string): Date {
 export const formatNumber = (value: number): string => {
   return new Intl.NumberFormat("en").format(value);
 };
+
+export const getGreeting = () => {
+  const currHour = new Date().getHours();
+
+  if (currHour === 0) {
+    return "It's Midnight";
+  } else if (currHour < 12) {
+    return "Good Morning";
+  } else if (currHour < 16) {
+    return "Good Afternoon";
+  } else if (currHour < 21) {
+    return "Good Evening";
+  } else {
+    return "Good Night";
+  }
+}

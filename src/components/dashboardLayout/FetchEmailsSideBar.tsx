@@ -2,7 +2,6 @@
 
 import React, {
   useState,
-  useEffect,
   ChangeEvent,
   // ChangeEventHandler,
   // MouseEventHandler,
@@ -17,24 +16,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/src/components/ui/select";
-import { OverviewData, Query } from "@/src/lib/types";
-import { Loader2, RefreshCcw } from "lucide-react";
+import {  Query, User } from "@/src/lib/types";
+import {  RefreshCcw } from "lucide-react";
 // import { toast } from "sonner";
-import { platforms, sectors } from "@/src/lib/utils";
+import { locations, subscriptionPlans } from "@/src/lib/utils";
+import {  statusOptions } from "@/src/lib/contents";
+import { useReactQuery } from "@/src/services/apiHelper";
+import { Button } from "@/src/components/ui/button";
+import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
+import { Input } from "@/src/components/ui/input";
 
 type Props = {
   selectedEmails: string[];
   setSelectedEmails: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-const userTypes = ["Users", "Prospects", "Partners"];
-
 export default function FetchEmailsSideBar({
   setSelectedEmails,
   selectedEmails,
 }: Props) {
   // const [usersData, setUsersData] = useState<OverviewData[] | null>(null);
-  const [searchString, setSearchString] = useState<string>("");
+  const [searchString, setSearchString] = useState("");
   // const [open, setOpen] = useState(false);
   // const [submitting, setSubmitting] = useState(false);
   // const [form, setForm] = useState({
@@ -46,10 +48,42 @@ export default function FetchEmailsSideBar({
   //   userType: "",
   // });
   const [queryParams, setQueryParams] = useState<Query>({
-    sector: undefined,
-    platform: undefined,
-    userType: undefined,
+    status: undefined,
+    location: undefined,
+    subscriptionPlan: undefined,
   });
+
+const { data,isLoading } = useReactQuery<User[]>(['users'], '/user/excite-users');
+
+const users = data?.data.data;
+
+// filter users by search
+ let filteredUsers = users?.map((user) => (user.email.includes(searchString) ? user : null)).filter((user) => user !== null);
+
+ // filter users by status
+ if (queryParams.status) {
+    console.log(queryParams)
+    filteredUsers = filteredUsers?.filter(
+      (user) => user.status.toLowerCase() === queryParams.status?.toLowerCase()
+    );
+  }
+
+  // filter users by location
+  if(queryParams.location) {
+    filteredUsers = filteredUsers?.filter(
+      (user) => user.location.state.toLowerCase() === queryParams.location?.toLowerCase()
+    );
+  }
+
+  // filter users by subscription plan
+  if(queryParams.subscriptionPlan) {
+    filteredUsers = filteredUsers?.filter(
+      (user) => user.subscriptionPlan.toLowerCase() === queryParams.subscriptionPlan?.toLowerCase()
+    );
+  }
+
+  // console.log(filteredUsers)
+
 
   //   const {
   //     data: emailList,
@@ -164,7 +198,7 @@ export default function FetchEmailsSideBar({
   // if (isFetching)
   // 	return (
   // 		<div className="w-[27rem] h-[60vh] border flex justify-center items-center">
-  // 			<Loader2 className="animate-spin w-12 h-12" />
+  			// <Loader2 className="animate-spin w-12 h-12" />
   // 		</div>
   // 	);
   //...
@@ -292,7 +326,7 @@ export default function FetchEmailsSideBar({
           </DialogContent>
         </Dialog>
       </div> */}
-      <input
+      <Input
         type="text"
         id="email"
         placeholder="Search Email..."
@@ -301,30 +335,28 @@ export default function FetchEmailsSideBar({
       />
       <Select
         onValueChange={(val) => {
-          // filterParam({ name: "platform", val });
-          if (val == "undefined") {
+          if (val === "all") {
             setQueryParams((prev) => ({
               ...prev,
-              platform: undefined,
+              location: undefined,
             }));
-            return;
           }
           setQueryParams((prev) => ({
             ...prev,
-            platform: val.toUpperCase(),
+            location: val,
           }));
         }}
       >
         <SelectTrigger className="mt-3 w-full">
-          <SelectValue placeholder="Filter by Platform" />
+          <SelectValue placeholder="Filter by Location" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Platforms</SelectLabel>
-            <SelectItem value="undefined">All platforms</SelectItem>
-            {platforms.map((platform, index) => (
-              <SelectItem key={index} value={platform} className="capitalize">
-                {platform}
+            <SelectLabel>Location</SelectLabel>
+            <SelectItem value="all">All</SelectItem>
+            {locations.map((location, index) => (
+              <SelectItem key={index} value={location} className="capitalize">
+                {location}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -332,60 +364,52 @@ export default function FetchEmailsSideBar({
       </Select>
       <Select
         onValueChange={(val) => {
-          // filterParam({ name: "sector", val });
-          if (val == "undefined") {
+          if (val === "all") {
             setQueryParams((prev) => ({
               ...prev,
-              sector: undefined,
+              subscriptionPlan: undefined,
             }));
             return;
           }
           setQueryParams((prev) => ({
             ...prev,
-            sector: val.toUpperCase(),
+            subscriptionPlan: val,
           }));
         }}
       >
         <SelectTrigger className="mt-3 w-full">
-          <SelectValue placeholder="Filter by Sector" />
+          <SelectValue placeholder="Filter by Subscription plans" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>Sectors</SelectLabel>
-            <SelectItem value="undefined">All sectors</SelectItem>
-            {sectors.map((sector, index) => (
-              <SelectItem key={index} value={sector} className="capitalize">
-                {sector}
+            <SelectLabel>Subscription plan</SelectLabel>
+            <SelectItem value="all">All</SelectItem>
+            {subscriptionPlans.map((plan, index) => (
+              <SelectItem key={index} value={plan} className="capitalize">
+                {plan}
               </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>
       </Select>
       <Select
-        onValueChange={(val) => {
-          if (val == "undefined") {
-            setQueryParams((prev) => ({
-              ...prev,
-              userType: undefined,
-            }));
+        onValueChange={(val)=>{
+          if (val==='all'){
+            setQueryParams((prev)=>({...prev,status:undefined}))
             return;
-          }
-          setQueryParams((prev) => ({
-            ...prev,
-            userType: val,
-          }));
+          } 
+          setQueryParams((prev)=>({...prev,status:val}))
         }}
       >
         <SelectTrigger className="mt-3 w-full">
-          <SelectValue placeholder="Filter by UserType" />
+          <SelectValue placeholder="Filter by Status" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>User Types</SelectLabel>
-            <SelectItem value="undefined">All user types</SelectItem>
-            {userTypes.map((userType, index) => (
-              <SelectItem key={index} value={userType} className="capitalize">
-                {userType}
+            <SelectLabel>Status</SelectLabel>
+            {statusOptions.map((status, index) => (
+              <SelectItem key={index} value={status} className="capitalize">
+                {`${status.charAt(0).toUpperCase()}${status.substring(1)}`}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -399,66 +423,33 @@ export default function FetchEmailsSideBar({
           />
           <label
             htmlFor="Select All"
-            className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed"
+            className="text-sm leading-none text-secondary font-medium peer-disabled:cursor-not-allowed"
           >
             Select All
           </label>
         </div>
 
-        <button
+        <Button
           onClick={fetchEmails}
           className="flex cursor-pointer items-center gap-1 rounded-lg bg-green-600 px-2 py-1 text-sm text-white"
         >
           <RefreshCcw size={16} /> Refresh
-        </button>
+        </Button>
       </div>
 
-      {/* <div className=" my-3 h-[60vh] overflow-y-scroll">
-        {isFetching ? (
-          <div className="w-full h-full flex justify-center items-center">
-            <Loader2 className="animate-spin w-12 h-12" />
-          </div>
-        ) : emailList ? (
-          emailList.data.length !== 0 ? (
-            emailList.data
-              .filter((userData) =>
-                sectors.includes(searchString)
-                  ? userData.sector?.toLowerCase() ===
-                    searchString.toLowerCase()
-                  : userData.email.includes(searchString.toLowerCase())
-              )
-              .map((userData) => (
-                <div
-                  key={userData._id}
-                  className="flex items-center space-x-2 my-4"
-                >
-                  <Checkbox
-                    id={userData.email}
-                    onCheckedChange={(value) =>
-                      handleEmailSelection(value, userData.email)
-                    }
-                    checked={
-                      selectedEmails.includes(userData.email) ? true : false
-                    }
-                  />
-                  <label
-                    htmlFor={userData.email}
-                    className="text-sm font-medium cursor-pointer leading-none peer-disabled:cursor-not-allowed"
-                  >
-                    {userData.email}
-                  </label>
-                </div>
-              ))
-          ) : (
-            <p>No emails yet</p>
-          )
-        ) : (
-          <div className="w-full h-full border flex justify-center items-center flex-col gap-4">
-            <AlertCircle className="w-12 h-12" />
-            <p>Something went wrong!</p>
-          </div>
-        )}
-      </div> */}
+      <div className="my-3 min-h-[20vh] max-h-[50vh] h-full overflow-y-auto space-y-1.5">
+        {isLoading &&
+        <div className="flex justify-center items-center">
+          <Loader size={LoaderSize.normal}/>
+        </div>}
+        {!isLoading && filteredUsers?.length!==0 && filteredUsers?.map((user,index) =>
+            <ul key={index} className="flex items-center gap-2.5">
+              <Checkbox id="Select" onCheckedChange={()=>{}}/>
+              <li className="text-sm text-secondary">{user.email}</li>
+            </ul>
+            )}
+        {!isLoading && filteredUsers?.length===0 && <p className="text-center text-secondary capitalize">search emails not found</p>} 
+      </div>
     </div>
   );
 }

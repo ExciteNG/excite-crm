@@ -31,18 +31,17 @@ import {
 } from "@/src/components/ui/table";
 import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
 
-const statusTitle = ["all", "messaged", "converted", "called", "follow-up"];
 
 type Status = "all" | "messaged" | "converted" | "called" | "follow-up";
 
 export default function OverviewPage() {
   const [status, setStatus] = useState<Status>("all");
-  const { data: usersData } = useReactQuery<User[]>(
+
+  const { data: usersData, isLoading:isLoadingUsers } = useReactQuery<User[]>(
     ["users"],
     "/user/excite-users",
   );
-
-  const { data: leadsData } = useReactQuery<Lead[]>(["leads"], "/leads");
+  const { data: leadsData, isLoading:isLoadingLeads } = useReactQuery<Lead[]>(["leads"], "/leads");
 
   const users = usersData?.data.data;
   const leads = leadsData?.data.data;
@@ -53,6 +52,9 @@ export default function OverviewPage() {
     }
     return lead.status.toLowerCase() === status.toLowerCase();
   });
+
+  const statusTitle = ["all", "messaged", "converted", "called", "follow-up"];
+  const overviewTableHeader = ['full name', 'email', 'phone number', 'location', 'source', 'registered date', 'status']
 
   console.log(filteredLeads)
 
@@ -65,6 +67,7 @@ export default function OverviewPage() {
           matrix={formatNumber(users?.length as number)}
           iconBg="bg-[#EDF9FF]"
           iconColor="text-[#12A6F0]"
+          isLoading={isLoadingUsers}
         />
         <DashCard
           Icon={HiMiniUsers}
@@ -72,6 +75,7 @@ export default function OverviewPage() {
           matrix={2}
           iconBg="bg-[#E6FFF2]"
           iconColor="text-[#00AA4F]"
+          isLoading={isLoadingUsers}
         />
         <DashCard
           Icon={MdGroupAdd}
@@ -79,11 +83,12 @@ export default function OverviewPage() {
           matrix={formatNumber(leads?.length as number)}
           iconBg="bg-[#FEF3F2]"
           iconColor="text-[#E7000B]"
+          isLoading={isLoadingLeads}
         />
       </section>
       <section className="grid grid-cols-[1.5fr_1fr] gap-5">
         <ChartBar />
-        <ChartPie leads={leads || undefined} />
+        <ChartPie leads={leads as Lead[]} isLoading={isLoadingLeads}/>
       </section>
       <section className="bg-background divide-muted space-y-8 divide-y-2 divide-solid rounded-[12px] p-5">
         <h2 className="text-[1.13rem] font-semibold capitalize">
@@ -107,32 +112,16 @@ export default function OverviewPage() {
           </Select>
           <Table>
             <TableHeader className="sticky top-0">
-              <TableRow className="bg-[#EFEFF0]/45">
-                <TableHead className="text-[#4F4F4F text-center font-semibold">
-                  Full Name
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Email
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Phone Number
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Location
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Source
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Registered Date
-                </TableHead>
-                <TableHead className="text-[#4F4F4F">Status</TableHead>
+              <TableRow className="bg-secondary">
+              {overviewTableHeader.map((header,index)=><TableHead key={index} className="text-primary text-center font-semibold capitalize">
+                  {header}
+                </TableHead>)}
               </TableRow>
             </TableHeader>
-            <TableBody className="h-full max-h-dvh overflow-scroll">
+            <TableBody className="h-full divide-y-2 divide-primary max-h-dvh overflow-scroll">
               {filteredLeads?.map((lead, index) => {
                 return (
-                  <TableRow key={index} className="h-16">
+                  <TableRow key={index} className="h-16 text-secondary">
                     <TableCell className="text-center">
                       {lead.name.fullname}
                     </TableCell>
@@ -143,7 +132,7 @@ export default function OverviewPage() {
                       {lead.phoneNumber}
                     </TableCell>
                     <TableCell className="text-center">
-                      {lead.location.city} {lead.location.state}
+                      {`${lead.location.city}, ${lead.location.state}`}
                     </TableCell>
                     <TableCell className="text-center capitalize">
                       {lead.source}
@@ -151,8 +140,9 @@ export default function OverviewPage() {
                     <TableCell className="text-center">
                       {formatDate(lead.createdAt)}
                     </TableCell>
-                    <TableCell>
-                      <StatusTag status={lead.status} />
+                    <TableCell className="text-center capitalize">
+                      {/* <StatusTag status={lead.status}/> */}
+                      {lead.status}
                     </TableCell>
                   </TableRow>
                 );

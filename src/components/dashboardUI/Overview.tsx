@@ -39,24 +39,15 @@ type Status = "all" | "messaged" | "converted" | "called" | "follow-up";
 
 const Overview = () => {
   const [status, setStatus] = useState<Status>("all");
-  const { data: usersData } = useReactQuery<User[]>(
+  const { data: usersData, isLoading:isLoadingUsers } = useReactQuery<User[]>(
     ["users"],
     "/user/excite-users",
   );
 
-  const { data: leadsData } = useReactQuery<Lead[]>(["leads"], "/leads");
+  const { data: leadsData, isLoading:isLoadingLeads } = useReactQuery<Lead[]>(["leads"], "/leads");
 
   const users = usersData?.data.data;
   const leads = leadsData?.data.data;
-
-  console.log(leads);
-
-  const filteredLeads = leads?.filter((lead) => {
-    if (status.toLowerCase() === "all") {
-      return leads;
-    }
-    return lead.status.toLowerCase() === status.toLowerCase();
-  });
 
   return (
     <section className="space-y-7">
@@ -67,6 +58,7 @@ const Overview = () => {
           matrix={formatNumber(users?.length as number)}
           iconBg="bg-[#EDF9FF]"
           iconColor="text-[#12A6F0]"
+          isLoading={isLoadingUsers}
         />
         <DashCard
           Icon={HiMiniUsers}
@@ -74,6 +66,7 @@ const Overview = () => {
           matrix={2}
           iconBg="bg-[#E6FFF2]"
           iconColor="text-[#00AA4F]"
+          isLoading={isLoadingUsers}
         />
         <DashCard
           Icon={MdGroupAdd}
@@ -81,6 +74,7 @@ const Overview = () => {
           matrix={formatNumber(leads?.length as number)}
           iconBg="bg-[#FEF3F2]"
           iconColor="text-[#E7000B]"
+          isLoading={isLoadingLeads}
         />
       </div>
       <article className="flex justify-between">
@@ -88,7 +82,7 @@ const Overview = () => {
           <ChartBar />
         </div>
         <div className="w-3/8">
-          <ChartPie leads={leads || undefined} />
+          <ChartPie leads={leads as Lead[]} isLoading={isLoadingLeads} />
         </div>
       </article>
       <section className="h-fit p-5 border rounded-md shadow bg-white">
@@ -145,7 +139,7 @@ const Overview = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredLeads?.map((row, index) => {
+              {leads?.map((row, index) => {
                 return (
                   <TableRow key={index} className="h-16">
                     <TableCell className="text-center">

@@ -32,33 +32,38 @@ import {
 // import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
 import Chatbot from "@/src/components/dashboardLayout/ChatBot";
 import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
+import Paginate from "@/src/components/dashboardUI/reusableComponents/Paginate";
+import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
 
 
 type Status = "all" | "messaged" | "converted" | "called" | "follow-up";
 
 export default function OverviewPage() {
   const [status, setStatus] = useState<Status>("all");
+  const [page, setPage] = useState(1);
+  
+  const query = new URLSearchParams({
+    page: page.toString(),
+    ...(status !== "all" && { status }),
+  }).toString();
 
-  const { data: usersData, isLoading:isLoadingUsers } = useReactQuery<User[]>(
+  const { data: leadsData, isLoading:isLoadingLeads } = useReactQuery<Lead[]>(["leads", page.toString(), status], `/leads?${query}`);
+
+   const { data: usersData, isLoading:isLoadingUsers } = useReactQuery<User[]>(
     ["users"],
     "/user/excite-users",
   );
-  const { data: leadsData, isLoading:isLoadingLeads } = useReactQuery<Lead[]>(["leads"], "/leads");
+  
+  const leads = leadsData?.data.data ?? [];
+  
+  const usersStat = usersData?.data.totalCount
+  const leadsStat = leadsData?.data.totalCount
 
-  const users = usersData?.data.data;
-  const leads = leadsData?.data.data;
-
-    const filteredLeads = leads?.filter((lead) => {
-    if (status.toLowerCase() === "all") {
-      return leads;
-    }
-    return lead.status.toLowerCase() === status.toLowerCase();
-  });
+  const currentPage = leadsData?.data?.currentPage ?? 1;
+  const totalPages = leadsData?.data?.totalPages ?? 1;
 
   const statusTitle = ["all", "messaged", "converted", "called", "follow-up"];
   const overviewTableHeader = ['full name', 'email', 'phone number', 'location', 'source', 'registered date', 'status']
-
-  console.log(filteredLeads)
 
   return (
     <section className="space-y-7 p-5">
@@ -66,7 +71,7 @@ export default function OverviewPage() {
         <DashCard
           Icon={HiMiniUserGroup}
           title={"total users"}
-          matrix={formatNumber(users?.length as number)}
+          matrix={formatNumber(usersStat as number)}
           iconBg="bg-[#EDF9FF]"
           iconColor="text-[#12A6F0]"
           isLoading={isLoadingUsers}
@@ -74,7 +79,7 @@ export default function OverviewPage() {
         <DashCard
           Icon={HiMiniUsers}
           title={"active users"}
-          matrix={2}
+          matrix={1}
           iconBg="bg-[#E6FFF2]"
           iconColor="text-[#00AA4F]"
           isLoading={isLoadingUsers}
@@ -82,7 +87,7 @@ export default function OverviewPage() {
         <DashCard
           Icon={MdGroupAdd}
           title={"leads"}
-          matrix={formatNumber(leads?.length as number)}
+          matrix={formatNumber(leadsStat as number)}
           iconBg="bg-[#FEF3F2]"
           iconColor="text-[#E7000B]"
           isLoading={isLoadingLeads}
@@ -92,7 +97,7 @@ export default function OverviewPage() {
         <ChartBar />
         <ChartPie leads={leads as Lead[]} isLoading={isLoadingLeads}/>
       </section>
-      <section className="bg-background divide-muted space-y-8 divide-y-2 divide-solid rounded-[12px] p-5">
+      <section className="divide-muted space-y-8 divide-y-2 divide-solid rounded-[12px] p-5">
         <h2 className="text-[1.13rem] font-semibold capitalize">
           recent leads
         </h2>
@@ -123,15 +128,15 @@ export default function OverviewPage() {
             <TableBody className="h-full divide-y-2 divide-primary/30 max-h-[50vh] overflow-scroll">
               {isLoadingLeads && (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-96 text-center">
+                  <TableCell colSpan={7} className="h-48 text-center">
                     <div className="flex flex-col items-center justify-center space-y-4">
-                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                      <Loader size={LoaderSize.normal}/>
                       <p className="text-primary">Fetching recent leads...</p>
                     </div>
                   </TableCell>
                 </TableRow>
               )}
-              {!isLoadingLeads&&filteredLeads?.map((lead, index) => {
+              {!isLoadingLeads&&leads?.map((lead, index) => {
                 return (
                   <TableRow key={index} className="h-16 text-secondary">
                     <TableCell className="text-center">
@@ -164,6 +169,9 @@ export default function OverviewPage() {
         </section>
       </section>
       <Chatbot/>
+      {!isLoadingLeads && leads.length!==0 && (
+        <Paginate currPage={currentPage} totalPages={totalPages} setPage={setPage}/>
+      )}
     </section>
   );
 }

@@ -23,21 +23,25 @@ import {
 } from "../ui/select";
 import { Label } from "@/src/components/ui/label";
 import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
+import Paginate from "@/src/components/dashboardUI/reusableComponents/Paginate";
 
 const Leads = () => {
   const [status, setStatus] = useState<UserStatus | "all">("all");
-  const { data: leadsData,isLoading } = useReactQuery<Lead[]>(["leads"], "/leads");
+  const [page, setPage] = useState(1);
 
-  const leads = leadsData?.data.data;
-  console.log(leads);
+  const query = new URLSearchParams({
+    page: page.toString(),
+    ...(status !== "all" && { status }),
+  }).toString();
 
-  // filter users by status
-  const filteredLeads = leads?.filter((lead) => {
-    if (status.toLowerCase() === "all") return leads;
-    else {
-      return lead.status.toLowerCase() === status.toLowerCase();
-    }
-  });
+  const { data: leadsData,isLoading } = useReactQuery<Lead[]>(["leads", page.toString(), status], `/leads?${query}`);
+
+  console.log(leadsData)
+
+  const leads = leadsData?.data.data ?? [];
+  
+  const currentPage = leadsData?.data?.currentPage ?? 1;
+  const totalPages = leadsData?.data?.totalPages ?? 1;
 
   return (
   <>
@@ -45,7 +49,7 @@ const Leads = () => {
       <div className="flex justify-between w-full ">
         <div className="flex items-center justify-between">
           <div className="flex flex-col w-full">
-            <h2 className="text-lg font-semibold">Users</h2>
+            <h2 className="text-lg font-semibold">Leads</h2>
             <p className="text-muted-foreground text-sm font-light">
               Registered leads and activity status
             </p>
@@ -53,28 +57,33 @@ const Leads = () => {
         </div>
 
         <div className="flex flex-col items-end gap-1 my-2.5">
-          <Label className="w-[180px]">Filter by Status</Label>
-          <Select
-            value={status}
-            onValueChange={(value) => setStatus(value as UserStatus | "all")}
-          >
-            <SelectTrigger
-              className="ml-auto h-7 w-[180px] rounded-lg pl-2.5"
-              aria-label="Select a value"
+            <Label className="w-[180px]">Filter by Status</Label>
+            <Select
+              value={status}
+              onValueChange={(value) => {
+                setStatus(value as UserStatus | "all");
+                setPage(1);
+              }}
             >
-              <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              {statusOptions.map((status, index) => (
-                <SelectItem value={status} key={index} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+              <SelectTrigger className="ml-auto h-7 w-[180px] rounded-lg pl-2.5">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+
+              <SelectContent className="rounded-xl">
+                {statusOptions.map((status, index) => (
+                  <SelectItem
+                    key={index}
+                    value={status}
+                    className="hover:bg-primary hover:text-white data-highlighted:text-white data-highlighted:bg-primary/50"
+                  >
+                    {status.charAt(0).toUpperCase() + status.slice(1)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
       </div>
-      <div className="max-h-[300px] h-full overflow-y-auto relative">
+      <div className="h-[45vh] overflow-y-auto relative">
         <Table className="w-full">
           <TableHeader>
             <TableRow>
@@ -96,7 +105,7 @@ const Leads = () => {
                 </TableCell>
               </TableRow>
             )}
-            {filteredLeads?.map((lead) => (
+            {leads?.map((lead) => (
               <TableRow
                 key={lead.id}
               >
@@ -135,7 +144,13 @@ const Leads = () => {
         </Table>
       </div>
     </div>
-    {/* <div className="w-full bg-secondary h-10"></div> */}
+    {!isLoading && (
+        <Paginate
+          currPage={currentPage}
+          totalPages={totalPages}
+          setPage={setPage}
+        />
+      )}
   </>
   );
 };

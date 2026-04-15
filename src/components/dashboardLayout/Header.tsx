@@ -9,7 +9,6 @@ import {
 import { getGreeting } from "@/src/lib/utils";
 import { ChevronDown } from "lucide-react";
 
-
 const Header = () => {
   const [greetingStr, setGreetingStr] = useState(getGreeting)
   useEffect(()=>{
@@ -36,13 +35,13 @@ const Header = () => {
 
   return (
     <header className="flex bg-background justify-end items-center px-4 py-1.5 sticky top-0 z-10">
-      <div className=" rounded-full flex gap-1 items-center bg-muted cursor-pointer">
+      <div className="border rounded-full flex gap-1 items-center bg-muted cursor-pointer">
         <Avatar>
           <AvatarImage src={"#"} alt="profile picture" />
           <AvatarFallback className="bg-secondary text-primary">OI</AvatarFallback>
         </Avatar>
         <div className="space-y-0.5">
-          <p className="text-xs text-slate-800 font-extralight">{greetingStr}</p>
+          <p className="text-xs text-primary font-medium">{greetingStr}</p>
           <p className="text-[.6rem] font-semibold text-secondary">Oluwayelu Ifeoluwa</p>
         </div>
         <div className="flex w-8 aspect-square justify-center items-center">

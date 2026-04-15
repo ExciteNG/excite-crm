@@ -118,7 +118,7 @@ export function ChartBar() {
   const years = Object.keys(chartDataByYear);
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-primary/5">
       <CardHeader className="flex items-center justify-between">
         <div className="space-y-1.5">
           <CardTitle>Monthly Sign-ups</CardTitle>
@@ -309,7 +309,7 @@ export function ChartPie({ leads, isLoading }: { leads: Lead[], isLoading:boolea
   }
 
   return (
-    <Card data-chart={id} className="flex flex-col">
+    <Card data-chart={id} className="flex flex-col bg-primary/5">
       <ChartStyle id={id} config={pieChartConfig} />
       <CardHeader className="flex-row items-start space-y-0 pb-0">
         <div className="grid gap-1">

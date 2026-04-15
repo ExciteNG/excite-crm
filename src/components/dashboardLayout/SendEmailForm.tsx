@@ -598,7 +598,7 @@ export default function SendEmailForm({
                   <SelectItem
                     key={index}
                     value={template}
-                    className="capitalize"
+                    className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50"
                   >
                     {template.split("-").join(" ")}
                   </SelectItem>
@@ -624,7 +624,7 @@ export default function SendEmailForm({
               <SelectGroup>
                 <SelectLabel>From</SelectLabel>
                 {froms.map((from, index) => (
-                  <SelectItem key={index} value={from} className="capitalize">
+                  <SelectItem key={index} value={from} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                     {from}
                   </SelectItem>
                 ))}

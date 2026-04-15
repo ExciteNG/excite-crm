@@ -29,7 +29,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
-import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
+// import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
+import Chatbot from "@/src/components/dashboardLayout/ChatBot";
+import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
 
 
 type Status = "all" | "messaged" | "converted" | "called" | "follow-up";
@@ -96,14 +98,14 @@ export default function OverviewPage() {
         </h2>
         <section className="place-items-end space-y-2">
           <h3 className="w-36 font-medium">Filter by status</h3>
-          <Select value={status} onValueChange={(value) => setStatus(value as Status | "all")}>
+          <Select value={status} onValueChange={(value) => setStatus(value as Status)}>
             <SelectTrigger className="w-36" aria-label="Select a value">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               {statusTitle.map((title, index) => {
                 return (
-                  <SelectItem value={title} key={index} className="capitalize">
+                  <SelectItem value={title} key={index} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                     {title.charAt(0).toUpperCase() + title.slice(1)}
                   </SelectItem>
                 );
@@ -112,14 +114,24 @@ export default function OverviewPage() {
           </Select>
           <Table>
             <TableHeader className="sticky top-0">
-              <TableRow className="bg-secondary">
-              {overviewTableHeader.map((header,index)=><TableHead key={index} className="text-primary text-center font-semibold capitalize">
+              <TableRow className="bg-primary">
+              {overviewTableHeader.map((header,index)=><TableHead key={index} className="text-primary-foreground text-center font-semibold capitalize">
                   {header}
                 </TableHead>)}
               </TableRow>
             </TableHeader>
-            <TableBody className="h-full divide-y-2 divide-primary max-h-dvh overflow-scroll">
-              {filteredLeads?.map((lead, index) => {
+            <TableBody className="h-full divide-y-2 divide-primary/30 max-h-[50vh] overflow-scroll">
+              {isLoadingLeads && (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-96 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                      <p className="text-primary">Fetching recent leads...</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+              {!isLoadingLeads&&filteredLeads?.map((lead, index) => {
                 return (
                   <TableRow key={index} className="h-16 text-secondary">
                     <TableCell className="text-center">
@@ -151,6 +163,7 @@ export default function OverviewPage() {
           </Table>
         </section>
       </section>
+      <Chatbot/>
     </section>
   );
 }

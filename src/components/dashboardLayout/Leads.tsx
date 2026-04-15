@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MessageCircle, UserIcon, Users } from "lucide-react";
+import { ArrowRightLeft, UserIcon } from "lucide-react";
 import { Lead } from "@/src/lib/types";
 import { useReactQuery } from "@/src/services/apiHelper";
 import {
@@ -17,74 +17,16 @@ import { UserStatus } from "./AllUsers";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
 import { Label } from "@/src/components/ui/label";
-
-// const leads = [
-//   {
-//     name: "Jenny Wilson",
-//     email: "john@church.com",
-//     phone: "0819 012 3456",
-//     location: "Yaba",
-//     source: "Facebook",
-//     lastLogin: "2 min ago",
-//     status: "Follow-up",
-//   },
-//   {
-//     name: "Eleanor Pena",
-//     email: "john@church.com",
-//     phone: "0901 123 4567",
-//     location: "Mushin",
-//     source: "Tiktok",
-//     lastLogin: "1 hour ago",
-//     status: "Messaged",
-//   },
-//   {
-//     name: "Leslie Alexander",
-//     email: "john@church.com",
-//     phone: "0704 567 8901",
-//     location: "Ajegunle",
-//     source: "Youtube",
-//     lastLogin: "2 hour ago",
-//     status: "Called",
-//   },
-//   {
-//     name: "Marvin McKinney",
-//     email: "john@church.com",
-//     phone: "0810 123 4567",
-//     location: "Computer Village",
-//     source: "Whatsapp",
-//     lastLogin: "8 hour ago",
-//     status: "Converted",
-//   },
-//   {
-//     name: "Arlene McCoy",
-//     email: "john@church.com",
-//     phone: "0701 234 5678",
-//     location: "Abule Egba",
-//     source: "Online Event",
-//     lastLogin: "1 day ago",
-//     status: "Messaged",
-//   },
-//   {
-//     name: "Albert Flores",
-//     email: "john@church.com",
-//     phone: "0817 890 1234",
-//     location: "Eko Hotel",
-//     source: "Others",
-//     lastLogin: "30 days ago",
-//     status: "Messaged",
-//   },
-// ];
+import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
 
 const Leads = () => {
   const [status, setStatus] = useState<UserStatus | "all">("all");
-  const { data: leadsData } = useReactQuery<Lead[]>(["leads"], "/leads");
+  const { data: leadsData,isLoading } = useReactQuery<Lead[]>(["leads"], "/leads");
 
   const leads = leadsData?.data.data;
   console.log(leads);
@@ -124,7 +66,7 @@ const Leads = () => {
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               {statusOptions.map((status, index) => (
-                <SelectItem value={status} key={index} className="capitalize">
+                <SelectItem value={status} key={index} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                   {status.charAt(0).toUpperCase() + status.slice(1)}
                 </SelectItem>
               ))}
@@ -137,20 +79,30 @@ const Leads = () => {
           <TableHeader>
             <TableRow>
               {userManagementTableHeader.map((header: string) => (
-                <TableHead key={header} className={`sticky top-0 z-10 bg-secondary capitalize ${header.toLowerCase()==='user'?'text-left px-10':'text-center'} text-primary font-semibold`}>{header}
+                <TableHead key={header} className={`sticky top-0 z-10 bg-primary capitalize ${header.toLowerCase()==='user'?'text-left px-10':'text-center'} text-primary-foreground font-semibold`}>{header}
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
 
           <TableBody className="divide-y divide-secondary/15">
+            {isLoading && (
+              <TableRow>
+                <TableCell colSpan={7} className="h-96 text-center">
+                  <div className="flex flex-col items-center justify-center space-y-4">
+                    <Loader size={LoaderSize.normal}/>
+                    <p className="text-primary">fetching Leads...</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
             {filteredLeads?.map((lead) => (
               <TableRow
                 key={lead.id}
               >
                 <TableCell className="px-2.5 flex items-center gap-2.5">
-                  <div className="bg-primary/50 w-fit rounded-full p-2">
-                    <UserIcon size={16} className="text-green-600" />
+                   <div className="bg-primary/10 w-fit rounded-full p-2">
+                    <UserIcon size={16} className="text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-left">{lead.name.fullname}</p>
@@ -171,10 +123,10 @@ const Leads = () => {
 
                 <TableCell className="text-center">
                   <Button
-                    variant="outline"
-                    className="border-secondary ring-secondary hover:bg-secondary hover:text-background rounded-md border px-3 py-px text-xs capitalize"
+                    variant="ghost"
+                    className="text-stone-500 cursor-pointer"
                   >
-                    change status
+                    <ArrowRightLeft/>
                   </Button>
                 </TableCell>
               </TableRow>

@@ -1,7 +1,7 @@
+import React, { ChangeEvent, useState } from "react";
 import { User } from "@/src/lib/types";
 import { useReactQuery } from "@/src/services/apiHelper";
-import { MessageCircle, User as UserIcon } from "lucide-react";
-import React, { ChangeEvent, useState } from "react";
+import { Send, User as UserIcon } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -17,78 +17,21 @@ import { Button } from "../ui/button";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
 import StatusBadge from "../dashboardUI/reusableComponents/StatusBadge";
 import { Label } from "@/src/components/ui/label";
+import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
 
-// const users = [
-//   {
-//     fullname: "Jenny Wilson",
-//     email: "john@church.com",
-//     phoneNumber: "0819 012 3456",
-//     location: { lga: "Yaba", state: "lagos" },
-//     source: "Facebook",
-//     lastLogin: "2 min ago",
-//     status: "Active",
-//   },
-//   {
-//     fullname: "Eleanor Pena",
-//     email: "john@church.com",
-//     phoneNumber: "0901 123 4567",
-//     location: { lga: "Mushin", state: "lagos" },
-//     source: "Tiktok",
-//     lastLogin: "1 hour ago",
-//     status: "Active",
-//   },
-//   {
-//     fullname: "Leslie Alexander",
-//     email: "john@church.com",
-//     phoneNumber: "0704 567 8901",
-//     location: { lga: "Ajegunle", state: "lagos" },
-//     source: "Youtube",
-//     lastLogin: "2 hour ago",
-//     status: "Active",
-//   },
-//   {
-//     fullname: "Marvin McKinney",
-//     email: "john@church.com",
-//     phoneNumber: "0810 123 4567",
-//     location: { lga: "Computer Village", state: "lagos" },
-//     source: "Whatsapp",
-//     lastLogin: "8 hour ago",
-//     status: "Active",
-//   },
-//   {
-//     fullname: "Arlene McCoy",
-//     email: "john@church.com",
-//     phoneNumber: "0701 234 5678",
-//     location: { lga: "Abule Egba", state: "lagos" },
-//     source: "Online Event",
-//     lastLogin: "1 day ago",
-//     status: "Active",
-//   },
-//   {
-//     fullname: "Albert Flores",
-//     email: "john@church.com",
-//     phoneNumber: "0817 890 1234",
-//     location: { lga: "Eko Hotel", state: "lagos" },
-//     source: "Others",
-//     lastLogin: "6 months",
-//     status: "Inactive",
-//   },
-// ];
 
 export type UserStatus = "dormant" | "pending" | "active";
 
 const AllUsers = () => {
   const [status, setStatus] = useState<UserStatus | "all">("all");
 
-  const { data: usersData } = useReactQuery<User[]>(
+  const { data: usersData, isLoading } = useReactQuery<User[]>(
     ["users"],
     "/user/excite-users",
   );
@@ -99,16 +42,15 @@ const AllUsers = () => {
 
   // filter users by status
   const filteredUsers = users?.filter((user) => {
-    if (status.toLowerCase() === "all") return users;
+    if (status.toLowerCase() === "all") return true;
     else {
-      return user.status.toLowerCase() === status.toLowerCase();
+      return user.status === status;
     }
   });
 
   console.log(filteredUsers);
 
   return (
-    <>
     <div className="rounded-sm bg-background p-6 shadow-sm">
        <div className="flex justify-between w-full ">
         <div className="flex items-center justify-between">
@@ -134,7 +76,7 @@ const AllUsers = () => {
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               {statusOptions.map((status, index) => (
-                <SelectItem value={status} key={index} className="capitalize">
+                <SelectItem value={status} key={index} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                   {status.charAt(0).toUpperCase() + status.slice(1)}
                 </SelectItem>
               ))}
@@ -149,22 +91,31 @@ const AllUsers = () => {
               {userManagementTableHeader.map((header: string) => (
                 <TableHead
                   key={header}
-                  className={`sticky top-0 z-10 bg-secondary capitalize ${header.toLowerCase()==='user'?'text-left px-10':'text-center'} text-primary font-semibold`}
+                  className={`sticky top-0 z-10 bg-primary capitalize ${header.toLowerCase()==='user'?'text-left pl-16':'text-center'} text-primary-foreground font-semibold`}
                 >
                   {header}
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
-
-          <TableBody className="divide-y-2 divide-primary">
-            {filteredUsers?.map((user) => (
+          <TableBody className="divide-y-2 divide-primary/30">
+            {isLoading && (
+              <TableRow>
+                <TableCell colSpan={7} className="h-96 text-center">
+                  <div className="flex flex-col items-center justify-center space-y-4">
+                    <Loader size={LoaderSize.normal}/>
+                    <p className="text-primary">fetching Users...</p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+            {!isLoading && filteredUsers?.length!==0 && filteredUsers?.map((user) => (
               <TableRow
                 key={user.id}
               >
                 <TableCell className="px-2.5 flex items-center gap-2.5">
-                  <div className="bg-primary/50 w-fit rounded-full p-2">
-                    <UserIcon size={16} className="text-green-600" />
+                  <div className="bg-primary/10 w-fit rounded-full p-2">
+                    <UserIcon size={16} className="text-primary" />
                   </div>
                   <div>
                     <p className="font-medium text-left">{user.fullname}</p>
@@ -185,10 +136,10 @@ const AllUsers = () => {
 
                 <TableCell className="text-center">
                   <Button
-                    variant="outline"
-                    className="border-secondary ring-secondary hover:bg-secondary hover:text-background rounded-md border px-3 py-2 text-xs capitalize"
+                    variant="ghost"
+                    className="text-stone-500 cursor-pointer"
                   >
-                    message user
+                  <Send/>
                   </Button>
                 </TableCell>
               </TableRow>
@@ -197,8 +148,6 @@ const AllUsers = () => {
         </Table>
       </div>
     </div>
-      {/* <div className="w-full bg-secondary h-10"></div> */}
-    </>
   )}
 
 export default AllUsers;

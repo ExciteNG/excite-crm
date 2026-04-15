@@ -102,7 +102,7 @@ export default function Home() {
               name="email"
               render={({ field }) => (
                 <FormItem className="space-y-1.5">
-                  <FormLabel className="text-[#344054]">
+                  <FormLabel className="text-primary">
                     Email Address
                   </FormLabel>
                   <FormControl>
@@ -123,7 +123,7 @@ export default function Home() {
               name="password"
               render={({ field }) => (
                 <FormItem className="space-y-1.5">
-                  <FormLabel className="text-[#344054]">Password</FormLabel>
+                  <FormLabel className="text-primary">Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
@@ -139,14 +139,14 @@ export default function Home() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Checkbox className="mr-2" />
-                <span className="inline-block text-[0.875rem]">
+                <Checkbox className="mr-2 border-secondary" />
+                <span className="inline-block text-[0.675rem] text-secondary">
                   Remember me for 30 days
                 </span>
               </div>
               <Link
                 href="/forgot-password"
-                className="text-primary text-[0.875rem]"
+                className="text-primary text-[0.675rem]"
               >
                 Forgot your password?
               </Link>
@@ -154,7 +154,7 @@ export default function Home() {
 
             <Button
               type="submit"
-              className="w-full mt-2 text-black cursor-pointer"
+              className="mt-2 cursor-pointer"
               disabled={isPending}
             >
               {isPending ? "Signing in..." : "Sign In"}

@@ -353,9 +353,9 @@ const users = data?.data.data;
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Location</SelectLabel>
-            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="all" className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">All</SelectItem>
             {locations.map((location, index) => (
-              <SelectItem key={index} value={location} className="capitalize">
+              <SelectItem key={index} value={location} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                 {location}
               </SelectItem>
             ))}
@@ -383,9 +383,9 @@ const users = data?.data.data;
         <SelectContent>
           <SelectGroup>
             <SelectLabel>Subscription plan</SelectLabel>
-            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="all" className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">All</SelectItem>
             {subscriptionPlans.map((plan, index) => (
-              <SelectItem key={index} value={plan} className="capitalize">
+              <SelectItem key={index} value={plan} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                 {plan}
               </SelectItem>
             ))}
@@ -408,7 +408,7 @@ const users = data?.data.data;
           <SelectGroup>
             <SelectLabel>Status</SelectLabel>
             {statusOptions.map((status, index) => (
-              <SelectItem key={index} value={status} className="capitalize">
+              <SelectItem key={index} value={status} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                 {`${status.charAt(0).toUpperCase()}${status.substring(1)}`}
               </SelectItem>
             ))}

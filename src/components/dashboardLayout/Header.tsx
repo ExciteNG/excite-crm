@@ -8,9 +8,12 @@ import {
 } from "@/src/components/ui/avatar";
 import { getGreeting } from "@/src/lib/utils";
 import { ChevronDown } from "lucide-react";
+// import { useReactQuery } from "@/src/services/apiHelper";
 
 const Header = () => {
   const [greetingStr, setGreetingStr] = useState(getGreeting)
+  // const {data:user, isLoading} = useReactQuery(['user'],'/frff')
+  
   useEffect(()=>{
   const milSecondsUntilNextHour = () =>{
     const currMins = new Date().getMinutes()

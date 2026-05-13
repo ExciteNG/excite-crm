@@ -30,7 +30,7 @@ import {
   TableRow,
 } from "@/src/components/ui/table";
 // import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
-import Chatbot from "@/src/components/dashboardLayout/ChatBot";
+// import Chatbot from "@/src/components/dashboardLayout/ChatBot";
 import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
 import Paginate from "@/src/components/dashboardUI/reusableComponents/Paginate";
 import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
@@ -117,61 +117,145 @@ export default function OverviewPage() {
               })}
             </SelectContent>
           </Select>
-          <Table>
-            <TableHeader className="sticky top-0">
-              <TableRow className="bg-primary">
-              {overviewTableHeader.map((header,index)=><TableHead key={index} className="text-primary-foreground text-center font-semibold capitalize">
-                  {header}
-                </TableHead>)}
+          {/* Table */}
+          <Table containerClassName="h-[45vh] overflow-y-auto">
+            <TableHeader className="sticky top-0 z-50 bg-primary">
+              <TableRow>
+                {overviewTableHeader.map((header) => (
+                  <TableHead
+                    key={header}
+                    className="
+                      bg-primary
+                      text-primary-foreground
+                      text-center
+                      font-semibold
+                      capitalize
+                    "
+                  >
+                    {header}
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
-            <TableBody className="h-full divide-y-2 divide-primary/30 max-h-[50vh] overflow-scroll">
+
+            <TableBody className="divide-y-2 divide-primary/30">
               {isLoadingLeads && (
                 <TableRow>
                   <TableCell colSpan={7} className="h-48 text-center">
                     <div className="flex flex-col items-center justify-center space-y-4">
-                      <Loader size={LoaderSize.normal}/>
+                      <Loader size={LoaderSize.normal} />
                       <p className="text-primary">Fetching recent leads...</p>
                     </div>
                   </TableCell>
                 </TableRow>
               )}
-              {!isLoadingLeads&&leads?.map((lead, index) => {
-                return (
+
+              {!isLoadingLeads &&
+                leads?.map((lead, index) => (
                   <TableRow key={index} className="h-16 text-secondary">
                     <TableCell className="text-center">
                       {lead.name.fullname}
                     </TableCell>
+
                     <TableCell className="text-center lowercase">
                       {lead.email}
                     </TableCell>
+
                     <TableCell className="text-center">
                       {lead.phoneNumber}
                     </TableCell>
+
                     <TableCell className="text-center">
                       {`${lead.location.city}, ${lead.location.state}`}
                     </TableCell>
+
                     <TableCell className="text-center capitalize">
                       {lead.source}
                     </TableCell>
+
                     <TableCell className="text-center">
                       {formatDate(lead.createdAt)}
                     </TableCell>
+
                     <TableCell className="text-center capitalize">
-                      {/* <StatusTag status={lead.status}/> */}
                       {lead.status}
                     </TableCell>
                   </TableRow>
-                );
-              })}
+                ))}
             </TableBody>
           </Table>
         </section>
       </section>
-      <Chatbot/>
+      {/* <Chatbot/> */}
       {!isLoadingLeads && leads.length!==0 && (
         <Paginate currPage={currentPage} totalPages={totalPages} setPage={setPage}/>
       )}
     </section>
   );
 }
+
+
+/* 
+<div className="h-[45vh] w-full overflow-y-auto border-4 border-red-500 relative">
+            <Table>
+              <TableHeader className="sticky top-0 z-10">
+                <TableRow className="bg-primary">
+                  {overviewTableHeader.map((header, index) => (
+                    <TableHead
+                      key={index}
+                      className="bg-primary text-primary-foreground text-center font-semibold capitalize"
+                    >
+                      {header}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+
+              <TableBody className="divide-y-2 divide-primary/30">
+                {isLoadingLeads && (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-48 text-center">
+                      <div className="flex flex-col items-center justify-center space-y-4">
+                        <Loader size={LoaderSize.normal} />
+                        <p className="text-primary">Fetching recent leads...</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+
+                {!isLoadingLeads &&
+                  leads?.map((lead, index) => (
+                    <TableRow key={index} className="h-16 text-secondary">
+                      <TableCell className="text-center">
+                        {lead.name.fullname}
+                      </TableCell>
+
+                      <TableCell className="text-center lowercase">
+                        {lead.email}
+                      </TableCell>
+
+                      <TableCell className="text-center">
+                        {lead.phoneNumber}
+                      </TableCell>
+
+                      <TableCell className="text-center">
+                        {`${lead.location.city}, ${lead.location.state}`}
+                      </TableCell>
+
+                      <TableCell className="text-center capitalize">
+                        {lead.source}
+                      </TableCell>
+
+                      <TableCell className="text-center">
+                        {formatDate(lead.createdAt)}
+                      </TableCell>
+
+                      <TableCell className="text-center capitalize">
+                        {lead.status}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
+*/

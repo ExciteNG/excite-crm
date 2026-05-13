@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { AxiosError } from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -40,30 +41,38 @@ export default function Home() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { mutate, isPending } = useReactMutation<any, any>(
-    `/auth/login`,
     "post"
   );
 
   function onSubmit({ email, password }: FormSchema) {
     mutate(
-      {
+    {
+      path:'/auth/login',
+      data:{
         email,
         password,
-      },
-      {
-        onSuccess: ({ data }) => {
-          console.log("Success data: ", data);
-
-          toast.error("Success", { description: data?.message });
-          setCookie("token", data?.data?.token, { maxAge: 60 * 60 * 24 });
-          router.push("/dashboard");
-        },
-        onError: (err) => {
-          toast.error("Error", {
-            description: err?.response?.data?.message || "Something went wrong",
-          });
-        },
       }
+    },
+    {
+      onSuccess: ({ data }) => {
+        console.log("Success data: ", data);
+
+        toast.error("Success", { description: data?.message });
+        setCookie("token", data?.data?.token, { maxAge: 60 * 60 * 24 });
+        router.push("/dashboard");
+      },
+      
+
+      onError: (err: unknown) => {
+        if (err instanceof AxiosError) {
+          toast.error("Error", {
+            description: err.response?.data?.message || "Something went wrong",
+          });
+        } else {
+          toast.error("Error", { description: "Something went wrong" });
+        }
+      },
+    }
     );
   }
 

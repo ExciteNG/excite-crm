@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { ArrowRightLeft, UserIcon } from "lucide-react";
 import { Lead } from "@/src/lib/types";
-import { useReactQuery } from "@/src/services/apiHelper";
 import {
   Table,
   TableBody,
@@ -24,24 +23,78 @@ import {
 import { Label } from "@/src/components/ui/label";
 import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
 import Paginate from "@/src/components/dashboardUI/reusableComponents/Paginate";
+import StatusDropdown from "@/src/components/dashboardLayout/StatusDropdown";
+import { toast } from "sonner";
+import { useReactMutation, useReactQuery } from "@/src/services/apiHelper";
+import { useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 const Leads = () => {
   const [status, setStatus] = useState<UserStatus | "all">("all");
   const [page, setPage] = useState(1);
+  
+  const [open, setOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [newStatus, setNewStatus] = useState(selectedLead?.status as UserStatus);
+
+  const queryClient = useQueryClient();
 
   const query = new URLSearchParams({
     page: page.toString(),
     ...(status !== "all" && { status }),
   }).toString();
 
+  // fetch leads data
   const { data: leadsData,isLoading } = useReactQuery<Lead[]>(["leads", page.toString(), status], `/leads?${query}`);
+  console.log(status)
 
-  console.log(leadsData)
+  // send new status as a PUT request to server
+  const {mutate} = useReactMutation<
+  Lead,
+  { status: UserStatus }
+>(
+  "put"
+);
 
   const leads = leadsData?.data.data ?? [];
   
   const currentPage = leadsData?.data?.currentPage ?? 1;
   const totalPages = leadsData?.data?.totalPages ?? 1;
+
+  const handleUpdateStatus = async (
+    status: UserStatus
+  ) => {
+    if (!selectedLead) return;
+
+  setNewStatus(status)
+  mutate(
+  {
+    path: `/leads/${selectedLead.id}`,
+    data: { status:newStatus },
+  },
+  {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leads"] });
+      toast.success(
+        `Status updated for ${selectedLead.name.firstname}`
+      );
+    },
+
+    onError: (error:unknown) => {
+      if (error instanceof AxiosError) {
+          toast.error("Error", {
+            description: error.response?.data?.message || `Failed to update status for ${selectedLead.name.firstname}`,
+          });
+        } else {
+          toast.error("Error", { description: `Failed to update status for ${selectedLead.name.firstname}` });
+        }
+      },
+  },
+);
+  // close dialog
+  setOpen(false);
+};
+
 
   return (
   <>
@@ -62,6 +115,8 @@ const Leads = () => {
               value={status}
               onValueChange={(value) => {
                 setStatus(value as UserStatus | "all");
+
+                // return to first page
                 setPage(1);
               }}
             >
@@ -83,67 +138,93 @@ const Leads = () => {
             </Select>
           </div>
       </div>
-      <div className="h-[45vh] overflow-y-auto relative">
-        <Table className="w-full">
-          <TableHeader>
-            <TableRow>
-              {userManagementTableHeader.map((header: string) => (
-                <TableHead key={header} className={`sticky top-0 z-10 bg-primary capitalize ${header.toLowerCase()==='user'?'text-left px-10':'text-center'} text-primary-foreground font-semibold`}>{header}
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-
-          <TableBody className="divide-y divide-secondary/15">
-            {isLoading && (
-              <TableRow>
-                <TableCell colSpan={7} className="h-96 text-center">
-                  <div className="flex flex-col items-center justify-center space-y-4">
-                    <Loader size={LoaderSize.normal}/>
-                    <p className="text-primary">fetching Leads...</p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            )}
-            {leads?.map((lead) => (
-              <TableRow
-                key={lead.id}
+      <Table containerClassName="h-[45vh] overflow-y-auto">
+        <TableHeader className="sticky top-0 z-50 bg-primary">
+          <TableRow>
+            {userManagementTableHeader.map((header: string) => (
+              <TableHead
+                key={header}
+                className={`sticky top-0 z-10 ${
+                  header.toLowerCase() === "user"
+                    ? "text-left pl-12"
+                    : "text-center"
+                }   bg-primary
+                    text-primary-foreground
+                    font-semibold
+                    capitalize`}
               >
-                <TableCell className="px-2.5 flex items-center gap-2.5">
-                   <div className="bg-primary/10 w-fit rounded-full p-2">
-                    <UserIcon size={16} className="text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-left">{lead.name.fullname}</p>
-                    <p className="font-light">{lead.email}</p>
-                  </div>
-                </TableCell>
-
-                <TableCell className="text-center capitalize">{lead.phoneNumber}</TableCell>
-                <TableCell className="text-center capitalize">
-                  {`${lead.location.city}, ${lead.location?.state}`}
-                </TableCell>
-                <TableCell className="text-center capitalize">{lead.source || "-"}</TableCell>
-                <TableCell className="text-center capitalize">{lead.lastLogin || "-"}</TableCell>
-
-                <TableCell className="text-center capitalize">
-                  <StatusBadge status={lead.status as UserStatus} />
-                </TableCell>
-
-                <TableCell className="text-center">
-                  <Button
-                    variant="ghost"
-                    className="text-stone-500 cursor-pointer"
-                  >
-                    <ArrowRightLeft/>
-                  </Button>
-                </TableCell>
-              </TableRow>
+                {header}
+              </TableHead>
             ))}
-          </TableBody>
-        </Table>
-      </div>
+          </TableRow>
+        </TableHeader>
+
+        <TableBody className="divide-y divide-secondary/15">
+          {isLoading && (
+            <TableRow>
+              <TableCell colSpan={7} className="h-96 text-center">
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <Loader size={LoaderSize.normal}/>
+                  <p className="text-primary">fetching Leads...</p>
+                </div>
+              </TableCell>
+            </TableRow>
+          )}
+          {leads?.map((lead) => (
+            <TableRow
+              key={lead.id}
+            >
+              <TableCell className="px-2.5 flex items-center gap-2.5">
+                <div className="bg-primary/10 w-fit rounded-full p-2">
+                  <UserIcon size={16} className="text-primary" />
+                </div>
+                <div>
+                  <p className="font-normal text-left capitalize text-secondary">{lead.name.fullname}</p>
+                  <p className="font-light">{lead.email}</p>
+                </div>
+              </TableCell>
+
+              <TableCell className="text-center capitalize">{lead.phoneNumber}</TableCell>
+              <TableCell className="text-center capitalize">
+                {`${lead.location.city}, ${lead.location?.state}`}
+              </TableCell>
+              <TableCell className="text-center capitalize">{lead.source || "-"}</TableCell>
+              <TableCell className="text-center capitalize">{lead.lastLogin || "-"}</TableCell>
+
+              <TableCell className="text-center capitalize">
+                <StatusBadge status={lead.status as UserStatus} />
+              </TableCell>
+
+              <TableCell className="text-center relative">
+              <Button
+                variant="ghost"
+                className="text-stone-500 cursor-pointer"
+                onClick={() => {
+                  setSelectedLead(lead);
+                  setOpen((prev) => selectedLead?.id === lead.id ? !prev : true);
+                }}
+              >
+                <ArrowRightLeft />
+              </Button>
+                {open && selectedLead?.id === lead.id && (
+                  <div className="absolute top-12 right-5 z-20">
+                    <StatusDropdown
+                      isOpen={open}
+                      onOpenChange={setOpen}
+                      lead={selectedLead}
+                      setNewStatus={(status) =>
+                        handleUpdateStatus(status as UserStatus)
+                      }
+                    />
+                  </div>
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
+    
     {!isLoading && (
         <Paginate
           currPage={currentPage}

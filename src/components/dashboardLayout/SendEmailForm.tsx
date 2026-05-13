@@ -43,6 +43,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import CircularProgress from "../ui/circular-progress";
 import { useReactMutation } from "@/src/services/apiHelper";
+import { AxiosError } from "axios";
 
 interface Props {
   selectedEmails: string[];
@@ -390,12 +391,12 @@ export default function SendEmailForm({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { mutate } = useReactMutation<any, any>(
-    `/newsletter/bulk/send/agenda`,
+    // `/newsletter/bulk/send/agenda`,
     "post"
   );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { mutate: mutatePreview } = useReactMutation<any, any>(
-    `/newsletter/preview`,
+    // `/newsletter/preview`,
     "post"
   );
 
@@ -461,17 +462,26 @@ export default function SendEmailForm({
     try {
       // const response = await sendBulkMail({ data: formData }).unwrap();
       // toast.success(response.message);
-      mutate(formData, {
+      mutate({path:'/newsletter/bulk/send/agenda',data:{formData}}, {
         onSuccess: ({ data }) => {
           console.log("Success data: ", data);
 
           toast.success("Success", { description: data?.message });
         },
-        onError: (err) => {
+        // onError: (err) => {
+        //   toast.error("Error", {
+        //     description: err?.response?.data?.message || "Something went wrong",
+        //   });
+        // },
+        onError: (err: unknown) => {
+        if (err instanceof AxiosError) {
           toast.error("Error", {
-            description: err?.response?.data?.message || "Something went wrong",
+            description: err.response?.data?.message || "Something went wrong",
           });
-        },
+        } else {
+          toast.error("Error", { description: "Something went wrong" });
+        }
+      },
       });
       setIsSendingBack(true);
       setFormInputs((prev) => ({
@@ -521,16 +531,20 @@ export default function SendEmailForm({
       // const response = await previewNewsletter({ data: formData }).unwrap();
       // console.log(response);
       // setPreview(response.data);
-      mutatePreview(formData, {
+      mutatePreview({path:'/newsletter/preview',data:{formData}}, {
         onSuccess: ({ data }) => {
           console.log("Success data: ", data);
           toast.success("Success", { description: data?.message });
           setPreview(data.data);
         },
         onError: (err) => {
+          if (err instanceof AxiosError) {
           toast.error("Error", {
-            description: err?.response?.data?.message || "Something went wrong",
+            description: err.response?.data?.message || "Something went wrong",
           });
+        } else {
+          toast.error("Error", { description: "Something went wrong" });
+        }
         },
       });
     } catch (error) {

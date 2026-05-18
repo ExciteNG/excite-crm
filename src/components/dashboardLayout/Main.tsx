@@ -17,16 +17,3 @@ export default function Main({
     </main>
   );
 }
-//  className={`antialiased h-[calc(100vh-48px)] overflow-y-auto px-4 pb-4 bg-slate-100/65`}
-
-{
-  /* <footer className="h-12 bg-white">
-    <section
-      className={`antialiased h-[calc(100vh-96px)] overflow-y-auto px-4 pb-4 bg-slate-100/65`}
-    >
-      {children}
-    </section>
-    {/* <footer className="h-12 bg-white">
-      <FootPagination />
-    </footer> */
-}

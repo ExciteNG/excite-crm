@@ -29,32 +29,41 @@ import {
   TableHeader,
   TableRow,
 } from "@/src/components/ui/table";
+// import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
+// import Chatbot from "@/src/components/dashboardLayout/ChatBot";
+import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
+import Paginate from "@/src/components/dashboardUI/reusableComponents/Paginate";
 import StatusTag from "@/src/components/dashboardUI/reusableComponents/StatusTag";
 
-const statusTitle = ["all", "messaged", "converted", "called", "follow-up"];
 
 type Status = "all" | "messaged" | "converted" | "called" | "follow-up";
 
 export default function OverviewPage() {
   const [status, setStatus] = useState<Status>("all");
-  const { data: usersData } = useReactQuery<User[]>(
+  const [page, setPage] = useState(1);
+  
+  const query = new URLSearchParams({
+    page: page.toString(),
+    ...(status !== "all" && { status }),
+  }).toString();
+
+  const { data: leadsData, isLoading:isLoadingLeads } = useReactQuery<Lead[]>(["leads", page.toString(), status], `/leads?${query}`);
+
+   const { data: usersData, isLoading:isLoadingUsers } = useReactQuery<User[]>(
     ["users"],
     "/user/excite-users",
   );
+  
+  const leads = leadsData?.data.data ?? [];
+  
+  const usersStat = usersData?.data.totalCount
+  const leadsStat = leadsData?.data.totalCount
 
-  const { data: leadsData } = useReactQuery<Lead[]>(["leads"], "/leads");
+  const currentPage = leadsData?.data?.currentPage ?? 1;
+  const totalPages = leadsData?.data?.totalPages ?? 1;
 
-  const users = usersData?.data.data;
-  const leads = leadsData?.data.data;
-
-    const filteredLeads = leads?.filter((lead) => {
-    if (status.toLowerCase() === "all") {
-      return leads;
-    }
-    return lead.status.toLowerCase() === status.toLowerCase();
-  });
-
-  console.log(filteredLeads)
+  const statusTitle = ["all", "messaged", "converted", "called", "follow-up"];
+  const overviewTableHeader = ['full name', 'email', 'phone number', 'location', 'source', 'registered date', 'status']
 
   return (
     <section className="space-y-7 p-5">
@@ -62,105 +71,191 @@ export default function OverviewPage() {
         <DashCard
           Icon={HiMiniUserGroup}
           title={"total users"}
-          matrix={formatNumber(users?.length as number)}
+          matrix={formatNumber(usersStat as number)}
           iconBg="bg-[#EDF9FF]"
           iconColor="text-[#12A6F0]"
+          isLoading={isLoadingUsers}
         />
         <DashCard
           Icon={HiMiniUsers}
           title={"active users"}
-          matrix={2}
+          matrix={1}
           iconBg="bg-[#E6FFF2]"
           iconColor="text-[#00AA4F]"
+          isLoading={isLoadingUsers}
         />
         <DashCard
           Icon={MdGroupAdd}
           title={"leads"}
-          matrix={formatNumber(leads?.length as number)}
+          matrix={formatNumber(leadsStat as number)}
           iconBg="bg-[#FEF3F2]"
           iconColor="text-[#E7000B]"
+          isLoading={isLoadingLeads}
         />
       </section>
       <section className="grid grid-cols-[1.5fr_1fr] gap-5">
         <ChartBar />
-        <ChartPie leads={leads || undefined} />
+        <ChartPie leads={leads as Lead[]} isLoading={isLoadingLeads}/>
       </section>
-      <section className="bg-background divide-muted space-y-8 divide-y-2 divide-solid rounded-[12px] p-5">
+      <section className="divide-muted space-y-8 divide-y-2 divide-solid rounded-[12px] p-5">
         <h2 className="text-[1.13rem] font-semibold capitalize">
           recent leads
         </h2>
         <section className="place-items-end space-y-2">
           <h3 className="w-36 font-medium">Filter by status</h3>
-          <Select value={status} onValueChange={(value) => setStatus(value as Status | "all")}>
+          <Select value={status} onValueChange={(value) => setStatus(value as Status)}>
             <SelectTrigger className="w-36" aria-label="Select a value">
               <SelectValue placeholder="All Status" />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
               {statusTitle.map((title, index) => {
                 return (
-                  <SelectItem value={title} key={index} className="capitalize">
+                  <SelectItem value={title} key={index} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                     {title.charAt(0).toUpperCase() + title.slice(1)}
                   </SelectItem>
                 );
               })}
             </SelectContent>
           </Select>
-          <Table>
-            <TableHeader className="sticky top-0">
-              <TableRow className="bg-[#EFEFF0]/45">
-                <TableHead className="text-[#4F4F4F text-center font-semibold">
-                  Full Name
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Email
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Phone Number
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Location
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Source
-                </TableHead>
-                <TableHead className="text-[#4F4F4F text-center">
-                  Registered Date
-                </TableHead>
-                <TableHead className="text-[#4F4F4F">Status</TableHead>
+          {/* Table */}
+          <Table containerClassName="h-[45vh] overflow-y-auto">
+            <TableHeader className="sticky top-0 z-50 bg-primary">
+              <TableRow>
+                {overviewTableHeader.map((header) => (
+                  <TableHead
+                    key={header}
+                    className="
+                      bg-primary
+                      text-primary-foreground
+                      text-center
+                      font-semibold
+                      capitalize
+                    "
+                  >
+                    {header}
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
-            <TableBody className="h-full max-h-dvh overflow-scroll">
-              {filteredLeads?.map((lead, index) => {
-                return (
-                  <TableRow key={index} className="h-16">
+
+            <TableBody className="divide-y-2 divide-primary/30">
+              {isLoadingLeads && (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-48 text-center">
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                      <Loader size={LoaderSize.normal} />
+                      <p className="text-primary">Fetching recent leads...</p>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {!isLoadingLeads &&
+                leads?.map((lead, index) => (
+                  <TableRow key={index} className="h-16 text-secondary">
                     <TableCell className="text-center">
                       {lead.name.fullname}
                     </TableCell>
+
                     <TableCell className="text-center lowercase">
                       {lead.email}
                     </TableCell>
+
                     <TableCell className="text-center">
                       {lead.phoneNumber}
                     </TableCell>
+
                     <TableCell className="text-center">
-                      {lead.location.city} {lead.location.state}
+                      {`${lead.location.city}, ${lead.location.state}`}
                     </TableCell>
+
                     <TableCell className="text-center capitalize">
                       {lead.source}
                     </TableCell>
+
                     <TableCell className="text-center">
                       {formatDate(lead.createdAt)}
                     </TableCell>
-                    <TableCell>
-                      <StatusTag status={lead.status} />
+
+                    <TableCell className="text-center capitalize">
+                      {lead.status}
                     </TableCell>
                   </TableRow>
-                );
-              })}
+                ))}
             </TableBody>
           </Table>
         </section>
       </section>
+      {/* <Chatbot/> */}
+      {!isLoadingLeads && leads.length!==0 && (
+        <Paginate currPage={currentPage} totalPages={totalPages} setPage={setPage}/>
+      )}
     </section>
   );
 }
+
+
+/* 
+<div className="h-[45vh] w-full overflow-y-auto border-4 border-red-500 relative">
+            <Table>
+              <TableHeader className="sticky top-0 z-10">
+                <TableRow className="bg-primary">
+                  {overviewTableHeader.map((header, index) => (
+                    <TableHead
+                      key={index}
+                      className="bg-primary text-primary-foreground text-center font-semibold capitalize"
+                    >
+                      {header}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+
+              <TableBody className="divide-y-2 divide-primary/30">
+                {isLoadingLeads && (
+                  <TableRow>
+                    <TableCell colSpan={7} className="h-48 text-center">
+                      <div className="flex flex-col items-center justify-center space-y-4">
+                        <Loader size={LoaderSize.normal} />
+                        <p className="text-primary">Fetching recent leads...</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+
+                {!isLoadingLeads &&
+                  leads?.map((lead, index) => (
+                    <TableRow key={index} className="h-16 text-secondary">
+                      <TableCell className="text-center">
+                        {lead.name.fullname}
+                      </TableCell>
+
+                      <TableCell className="text-center lowercase">
+                        {lead.email}
+                      </TableCell>
+
+                      <TableCell className="text-center">
+                        {lead.phoneNumber}
+                      </TableCell>
+
+                      <TableCell className="text-center">
+                        {`${lead.location.city}, ${lead.location.state}`}
+                      </TableCell>
+
+                      <TableCell className="text-center capitalize">
+                        {lead.source}
+                      </TableCell>
+
+                      <TableCell className="text-center">
+                        {formatDate(lead.createdAt)}
+                      </TableCell>
+
+                      <TableCell className="text-center capitalize">
+                        {lead.status}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
+*/

@@ -43,6 +43,7 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import CircularProgress from "../ui/circular-progress";
 import { useReactMutation } from "@/src/services/apiHelper";
+import { AxiosError } from "axios";
 
 interface Props {
   selectedEmails: string[];
@@ -186,7 +187,6 @@ export default function SendEmailForm({
       console.log("Connecting to socket: ", socket.id);
       setSocketId(socket.id as string);
     });
-    console.log("Hello");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket.on("email-status", (data: any) => {
@@ -194,7 +194,6 @@ export default function SendEmailForm({
       setProgress((prev) => ({ ...prev, current: prev.current + 1 }));
       setStatusUpdate((prev) => [...prev, data]);
     });
-    console.log("Hi");
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     socket.on("email-completed", (data: any) => {
@@ -221,7 +220,7 @@ export default function SendEmailForm({
     e: ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { id, value, files } = e.target;
     const list = [...hotPicks];
 
@@ -321,7 +320,7 @@ export default function SendEmailForm({
     e: ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     const { id, value, files } = e.target;
     const list = [...podcastVlogs];
 
@@ -392,12 +391,12 @@ export default function SendEmailForm({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { mutate } = useReactMutation<any, any>(
-    `/newsletter/bulk/send/agenda`,
+    // `/newsletter/bulk/send/agenda`,
     "post"
   );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { mutate: mutatePreview } = useReactMutation<any, any>(
-    `/newsletter/preview`,
+    // `/newsletter/preview`,
     "post"
   );
 
@@ -463,17 +462,26 @@ export default function SendEmailForm({
     try {
       // const response = await sendBulkMail({ data: formData }).unwrap();
       // toast.success(response.message);
-      mutate(formData, {
+      mutate({path:'/newsletter/bulk/send/agenda',data:{formData}}, {
         onSuccess: ({ data }) => {
           console.log("Success data: ", data);
 
           toast.success("Success", { description: data?.message });
         },
-        onError: (err) => {
+        // onError: (err) => {
+        //   toast.error("Error", {
+        //     description: err?.response?.data?.message || "Something went wrong",
+        //   });
+        // },
+        onError: (err: unknown) => {
+        if (err instanceof AxiosError) {
           toast.error("Error", {
-            description: err?.response?.data?.message || "Something went wrong",
+            description: err.response?.data?.message || "Something went wrong",
           });
-        },
+        } else {
+          toast.error("Error", { description: "Something went wrong" });
+        }
+      },
       });
       setIsSendingBack(true);
       setFormInputs((prev) => ({
@@ -523,16 +531,20 @@ export default function SendEmailForm({
       // const response = await previewNewsletter({ data: formData }).unwrap();
       // console.log(response);
       // setPreview(response.data);
-      mutatePreview(formData, {
+      mutatePreview({path:'/newsletter/preview',data:{formData}}, {
         onSuccess: ({ data }) => {
           console.log("Success data: ", data);
           toast.success("Success", { description: data?.message });
           setPreview(data.data);
         },
         onError: (err) => {
+          if (err instanceof AxiosError) {
           toast.error("Error", {
-            description: err?.response?.data?.message || "Something went wrong",
+            description: err.response?.data?.message || "Something went wrong",
           });
+        } else {
+          toast.error("Error", { description: "Something went wrong" });
+        }
         },
       });
     } catch (error) {
@@ -600,7 +612,7 @@ export default function SendEmailForm({
                   <SelectItem
                     key={index}
                     value={template}
-                    className="capitalize"
+                    className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50"
                   >
                     {template.split("-").join(" ")}
                   </SelectItem>
@@ -626,7 +638,7 @@ export default function SendEmailForm({
               <SelectGroup>
                 <SelectLabel>From</SelectLabel>
                 {froms.map((from, index) => (
-                  <SelectItem key={index} value={from} className="capitalize">
+                  <SelectItem key={index} value={from} className="hover:bg-primary hover:text-white focus:bg-primary focus:outline-none data-highlighted:text-white data-highlighted:bg-primary/50">
                     {from}
                   </SelectItem>
                 ))}
@@ -641,13 +653,13 @@ export default function SendEmailForm({
           To:{" "}
         </label>
         <input
-          readOnly
           type="text"
           id="email"
           name="email"
+          readOnly
           value={selectedEmails}
-          placeholder="example@gmail.com, example2@gmail.com"
-          className="border border-[#00000047] p-2 w-full rounded-sm focus:outline-none cursor-not-allowed"
+          placeholder="jondoe@mail.com,janedoe@mail.com"
+          className="border border-[#00000047] p-2 w-full rounded-sm focus:outline-none"
         />
       </div>
       <div className="flex justify-end">
@@ -657,7 +669,7 @@ export default function SendEmailForm({
           className="text-sm flex items-center gap-1"
         >
           <span>CC, BCC</span>{" "}
-          {openCC ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          {openCC ? <ChevronUp size={15} /> : <ChevronDown size={15} className="text-primary"/>}
         </button>
       </div>
       {openCC && (
@@ -672,7 +684,7 @@ export default function SendEmailForm({
               name="cc"
               onChange={onInputChange}
               value={formInputs.cc}
-              placeholder="example@gmail.com, example2@gmail.com"
+              placeholder="cc_1@mail.com, cc_2@mail.com"
               className="border border-[#00000047] p-2 w-full rounded-sm focus:outline-none"
             />
           </div>
@@ -686,7 +698,7 @@ export default function SendEmailForm({
               name="bcc"
               onChange={onInputChange}
               value={formInputs.bcc}
-              placeholder="example@gmail.com, example2@gmail.com"
+              placeholder="bcc_1@mail.com, bcc_2@mail.com"
               className="border border-[#00000047] p-2 w-full rounded-sm focus:outline-none"
             />
           </div>

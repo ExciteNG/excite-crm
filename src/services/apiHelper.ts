@@ -29,7 +29,7 @@ export const useReactQuery = <T>(
   });
 };
 
-export const useReactMutation = <T, U>(
+/* export const useReactMutation = <T, U>(
   path: string,
   method: QueryMethod = "post"
 ): UseMutationResult<
@@ -43,6 +43,16 @@ export const useReactMutation = <T, U>(
     U
   >({
     mutationFn: (data: U) => {
+      return apiInstance[method]<ApiResponseSuccess<T>>(path, data);
+    },
+  });
+}; */
+
+export const useReactMutation = <T, U>(
+  method: QueryMethod = "post"
+) => {
+  return useMutation({
+    mutationFn: ({ path, data }: { path: string; data: U }) => {
       return apiInstance[method]<ApiResponseSuccess<T>>(path, data);
     },
   });

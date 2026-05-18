@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "@/src/components/ui/select";
 import { GoDotFill } from "react-icons/go";
+import Loader, { LoaderSize } from "@/src/components/dashboardUI/reusableComponents/Loader";
 
 export const description = "A bar chart";
 
@@ -117,7 +118,7 @@ export function ChartBar() {
   const years = Object.keys(chartDataByYear);
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-primary/5">
       <CardHeader className="flex items-center justify-between">
         <div className="space-y-1.5">
           <CardTitle>Monthly Sign-ups</CardTitle>
@@ -223,7 +224,7 @@ const sourceLabels: Record<string, string> = {
   other: "Other",
 };
 
-export function ChartPie({ leads }: { leads?: Lead[] }) {
+export function ChartPie({ leads, isLoading }: { leads: Lead[], isLoading:boolean }) {
   const id = "pie-interactive";
 
   const pieData = React.useMemo(() => {
@@ -277,7 +278,22 @@ export function ChartPie({ leads }: { leads?: Lead[] }) {
     }
   }, [pieData, activeSource]);
 
-  if (!pieData || pieData.length === 0) {
+  if(isLoading){
+    return (
+      <Card className="flex w-full flex-col">
+        <CardHeader className="flex-row items-start space-y-0 pb-0">
+          <div className="grid gap-1">
+            <CardTitle>Lead Sources</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="flex h-[220px] items-center justify-center px-0 pb-0">
+          <Loader size={LoaderSize.normal}/>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!isLoading && pieData.length === 0) {
     return (
       <Card className="flex w-full flex-col">
         <CardHeader className="flex-row items-start space-y-0 pb-0">
@@ -293,7 +309,7 @@ export function ChartPie({ leads }: { leads?: Lead[] }) {
   }
 
   return (
-    <Card data-chart={id} className="flex flex-col">
+    <Card data-chart={id} className="flex flex-col bg-primary/5">
       <ChartStyle id={id} config={pieChartConfig} />
       <CardHeader className="flex-row items-start space-y-0 pb-0">
         <div className="grid gap-1">

@@ -1,5 +1,4 @@
 export type QueryMethod = "post" | "put" | "patch" | "delete";
-
 export interface ApiResponseSuccess<T> {
   status: string;
   success: boolean;
@@ -8,6 +7,11 @@ export interface ApiResponseSuccess<T> {
   doc: T | null;
   payload: T | null;
   token?: string;
+  totalPages?: number;
+  pageSize?: number;
+  currentPage?: number;
+  currentCount?:number;
+  totalCount?:number,
 }
 
 export interface ApiResponseError {
@@ -245,13 +249,11 @@ export type PodcastVlogs = {
 };
 
 export type Query = {
-  provider?: string;
-  sector?: string;
-  platform?: string;
-  userType?: string;
-  institution?: string;
-  isSubscribed?: boolean;
+  status?: string;
+  location?: string;
+  subscriptionPlan?: string;
 };
+
 export type ProspectQuery = {
   page?: number;
   status?: string;

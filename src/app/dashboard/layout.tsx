@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Header from "@/src/components/dashboardLayout/Header";
-import SideNav from "@/src/components/dashboardLayout/SideNav";
 import Main from "@/src/components/dashboardLayout/Main";
 // import FootPagination from "@/src/components/dashboardLayout/FootPagination";
 

@@ -16,7 +16,7 @@ export default function UserManagementPage() {
           Manage and monitor your users.
         </p>
       </div>
-      <div className="bg-secondary w-fit space-x-2 rounded-lg p-1">
+      <div className="bg-secondary w-fit space-x-1 rounded-lg p-1">
         <Button
           onClick={() => setTab("users")}
           variant={`${tab === "users" ? "default" : "secondary"}`}
@@ -34,9 +34,7 @@ export default function UserManagementPage() {
           <span className="capitalize">leads</span>
         </Button>
       </div>
-      {/* <div className="max-h-screen h-full"> */}
       {tab === "users" ? <AllUsers /> : <Leads />}
-      {/* </div> */}
     </section>
   );
 }

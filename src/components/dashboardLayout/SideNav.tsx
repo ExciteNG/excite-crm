@@ -2,16 +2,50 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { deleteCookie } from "cookies-next";
 
 import Logo from "../Logo";
 import { Button } from "../ui/button";
 
 import { sidePortals } from "@/src/lib/contents";
 import { PiSignOutBold } from "react-icons/pi";
+import { useReactMutation } from "@/src/services/apiHelper";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
 export default function SideNav() {
   const pathName = usePathname();
   const router = useRouter();
+
+ const {mutate, isPending}= useReactMutation('post')
+
+
+const handleLogOut = () => {
+  mutate(
+    {
+      path: "/auth/logout",
+      data: "", // if your backend expects something
+    },
+    {
+      onSuccess: () => {
+        // Remove token from cookies
+        deleteCookie("token");
+        toast.success("Logged out successfully");
+        // Redirect to login
+        router.replace("/");
+      },
+      onError: (err:unknown) => {
+        if (err instanceof AxiosError) {
+            toast.error("Error", {
+              description: err.response?.data?.message || "Something went wrong",
+            });
+          } else {
+            toast.error("Error", { description: "Something went wrong" });
+          }
+        },
+    }
+  );
+};
 
   return (
     <aside className="sticky top-0 h-screen flex flex-col justify-between items-center bg-secondary py-5">
@@ -22,10 +56,10 @@ export default function SideNav() {
             <Link
               href={portal.link}
               key={portal.tabName}
-              className={`text-secondary-foreground flex items-center w-full rounded-lg gap-x-2.5 px-3 py-2 ${
+              className={`text-primary hover:bg-primary flex items-center w-full rounded-sm gap-x-2.5 px-3 py-2 ${
                 pathName === portal.link
-                  ? "bg-primary hover:bg-secondary"
-                  : "hover:bg-primary"
+                  ? "bg-primary text-primary-foreground"
+                  : undefined
               } `}
             >
               <portal.icon />
@@ -35,11 +69,9 @@ export default function SideNav() {
         </nav>
       </div>
       <Button
-        onClick={() => {
-          /* ===== handle logout logic ===== */
-          router.replace("/");
-        }}
+        onClick={handleLogOut}
         variant={"destructive"}
+        disabled={isPending}
         className="capitalize space-x-1 cursor-pointer"
       >
         <PiSignOutBold />

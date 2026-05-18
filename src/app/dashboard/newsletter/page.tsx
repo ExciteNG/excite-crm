@@ -1,14 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import FetchEmailsSideBar from "@/src/components/dashboardLayout/FetchEmailsSideBar";
 import SendEmailForm from "@/src/components/dashboardLayout/SendEmailForm";
-import { useState } from "react";
 
 const NewsletterPage = () => {
-  const [selectedEmails, setSelectedEmails] = useState<string[]>([
-    "usmannurudeen13@gmail.com",
-    "usmandenaro13@gmail.com",
-  ]);
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+
   return (
     <div className="h-full space-y-6 overflow-y-auto p-6">
       <div>

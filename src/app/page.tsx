@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { AxiosError } from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -40,30 +41,38 @@ export default function Home() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { mutate, isPending } = useReactMutation<any, any>(
-    `/auth/login`,
     "post"
   );
 
   function onSubmit({ email, password }: FormSchema) {
     mutate(
-      {
+    {
+      path:'/auth/login',
+      data:{
         email,
         password,
-      },
-      {
-        onSuccess: ({ data }) => {
-          console.log("Success data: ", data);
-
-          toast.error("Success", { description: data?.message });
-          setCookie("token", data?.data?.token, { maxAge: 60 * 60 * 24 });
-          router.push("/dashboard");
-        },
-        onError: (err) => {
-          toast.error("Error", {
-            description: err?.response?.data?.message || "Something went wrong",
-          });
-        },
       }
+    },
+    {
+      onSuccess: ({ data }) => {
+        console.log("Success data: ", data);
+
+        toast.error("Success", { description: data?.message });
+        setCookie("token", data?.data?.token, { maxAge: 60 * 60 * 24 });
+        router.push("/dashboard");
+      },
+      
+
+      onError: (err: unknown) => {
+        if (err instanceof AxiosError) {
+          toast.error("Error", {
+            description: err.response?.data?.message || "Something went wrong",
+          });
+        } else {
+          toast.error("Error", { description: "Something went wrong" });
+        }
+      },
+    }
     );
   }
 
@@ -102,7 +111,7 @@ export default function Home() {
               name="email"
               render={({ field }) => (
                 <FormItem className="space-y-1.5">
-                  <FormLabel className="text-[#344054]">
+                  <FormLabel className="text-primary">
                     Email Address
                   </FormLabel>
                   <FormControl>
@@ -123,7 +132,7 @@ export default function Home() {
               name="password"
               render={({ field }) => (
                 <FormItem className="space-y-1.5">
-                  <FormLabel className="text-[#344054]">Password</FormLabel>
+                  <FormLabel className="text-primary">Password</FormLabel>
                   <FormControl>
                     <Input
                       type="password"
@@ -139,14 +148,14 @@ export default function Home() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <Checkbox className="mr-2" />
-                <span className="inline-block text-[0.875rem]">
+                <Checkbox className="mr-2 border-secondary" />
+                <span className="inline-block text-[0.675rem] text-secondary">
                   Remember me for 30 days
                 </span>
               </div>
               <Link
                 href="/forgot-password"
-                className="text-primary text-[0.875rem]"
+                className="text-primary text-[0.675rem]"
               >
                 Forgot your password?
               </Link>
@@ -154,7 +163,7 @@ export default function Home() {
 
             <Button
               type="submit"
-              className="w-full mt-2 text-black cursor-pointer"
+              className="mt-2 cursor-pointer"
               disabled={isPending}
             >
               {isPending ? "Signing in..." : "Sign In"}

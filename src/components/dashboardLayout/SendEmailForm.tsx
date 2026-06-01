@@ -659,7 +659,7 @@ export default function SendEmailForm({
           readOnly
           value={selectedEmails}
           placeholder="jondoe@mail.com,janedoe@mail.com"
-          className="border border-[#00000047] p-2 w-full rounded-sm focus:outline-none"
+          className="text-secondary/50 border border-[#00000047] p-2 w-full rounded-sm focus:outline-none"
         />
       </div>
       <div className="flex justify-end">

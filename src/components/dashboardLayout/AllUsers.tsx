@@ -151,7 +151,7 @@ const totalPages = usersData?.data?.totalPages ?? 1;
                     </div>
 
                     <div>
-                      <p className="font-normal text-left capitalize text-secondary">
+                      <p className="font-normal text-left text-secondary">
                         {user.fullname}
                       </p>
                       <p className="font-light">{user.email}</p>

@@ -8,6 +8,7 @@ import { Users, Shield } from "lucide-react";
 
 export default function UserManagementPage() {
   const [tab, setTab] = useState<"users" | "leads">("users");
+  
   return (
     <section className="space-y-6 p-6">
       <div>

@@ -32,10 +32,8 @@ import { AxiosError } from "axios";
 const Leads = () => {
   const [status, setStatus] = useState<UserStatus | "all">("all");
   const [page, setPage] = useState(1);
-  
   const [open, setOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [newStatus, setNewStatus] = useState(selectedLead?.status as UserStatus);
 
   const queryClient = useQueryClient();
 
@@ -45,20 +43,23 @@ const Leads = () => {
   }).toString();
 
   // fetch leads data
-  const { data: leadsData,isLoading } = useReactQuery<Lead[]>(["leads", page.toString(), status], `/leads?${query}`);
-  console.log(status)
+  const { data: leadsData, isLoading } = useReactQuery<Lead[]>(["leads", page.toString(), status], `/leads?${query}`);
 
-  // send new status as a PUT request to server
-  const {mutate} = useReactMutation<
+
+  // send new status as a PATCH request to server
+  const {mutate, isPending} = useReactMutation<
   Lead,
   { status: UserStatus }
 >(
-  "put"
+  "patch"
 );
+
+console.log(leadsData);
 
   const leads = leadsData?.data.data ?? [];
   
   const currentPage = leadsData?.data?.currentPage ?? 1;
+  const currentResult = leadsData?.data.totalCount as number;
   const totalPages = leadsData?.data?.totalPages ?? 1;
 
   const handleUpdateStatus = async (
@@ -66,11 +67,10 @@ const Leads = () => {
   ) => {
     if (!selectedLead) return;
 
-  setNewStatus(status)
   mutate(
   {
-    path: `/leads/${selectedLead.id}`,
-    data: { status:newStatus },
+    path: `/leads/${selectedLead.id}/status`,
+    data: { status },
   },
   {
     onSuccess: () => {
@@ -192,7 +192,10 @@ const Leads = () => {
               <TableCell className="text-center capitalize">{lead.lastLogin || "-"}</TableCell>
 
               <TableCell className="text-center capitalize">
-                <StatusBadge status={lead.status as UserStatus} />
+                {(isPending && selectedLead?.id===lead.id) ?
+                  <Loader size={LoaderSize.small} className="mx-auto"/> 
+                : <StatusBadge status={lead.status as UserStatus} />}
+                
               </TableCell>
 
               <TableCell className="text-center relative">
@@ -225,7 +228,7 @@ const Leads = () => {
       </Table>
     </div>
     
-    {!isLoading && (
+    {!isLoading && currentResult>=1 && (
         <Paginate
           currPage={currentPage}
           totalPages={totalPages}

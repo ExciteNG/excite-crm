@@ -1,13 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import AllUsers from "@/src/components/dashboardLayout/AllUsers";
 import Leads from "@/src/components/dashboardLayout/Leads";
 import { Button } from "@/src/components/ui/button";
 import { Users, Shield } from "lucide-react";
-import { useState } from "react";
 
 export default function UserManagementPage() {
   const [tab, setTab] = useState<"users" | "leads">("users");
+  
   return (
     <section className="space-y-6 p-6">
       <div>

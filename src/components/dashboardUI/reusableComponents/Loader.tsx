@@ -3,7 +3,7 @@ export enum LoaderSize {
   normal = 'normal'
 }
 
-export default function Loader({ size }: { size: LoaderSize }) {
+export default function Loader({ size, className }: { size: LoaderSize, className?:string }) {
 
   const sizeMap = {
   small: 'w-4 rounded-md',
@@ -11,7 +11,7 @@ export default function Loader({ size }: { size: LoaderSize }) {
 }
   return (
     <div
-      className={`border-t-2 border-b-2 ${sizeMap[size]} aspect-square border-primary animate-spin`}
+      className={`border-t-2 border-b-2 ${sizeMap[size]} aspect-square border-primary animate-spin ${className}`}
     />
   )
 }

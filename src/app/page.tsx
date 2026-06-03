@@ -55,13 +55,10 @@ export default function Home() {
     },
     {
       onSuccess: ({ data }) => {
-        console.log("Success data: ", data);
-
-        toast.error("Success", { description: data?.message });
+        toast.success("Success", { description: data?.message });
         setCookie("token", data?.data?.token, { maxAge: 60 * 60 * 24 });
         router.push("/dashboard");
       },
-      
 
       onError: (err: unknown) => {
         if (err instanceof AxiosError) {
@@ -72,8 +69,7 @@ export default function Home() {
           toast.error("Error", { description: "Something went wrong" });
         }
       },
-    }
-    );
+    });
   }
 
   return (

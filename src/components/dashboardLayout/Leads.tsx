@@ -45,7 +45,6 @@ const Leads = () => {
   // fetch leads data
   const { data: leadsData, isLoading } = useReactQuery<Lead[]>(["leads", page.toString(), status], `/leads?${query}`);
 
-
   // send new status as a PATCH request to server
   const {mutate, isPending} = useReactMutation<
   Lead,
@@ -53,8 +52,6 @@ const Leads = () => {
 >(
   "patch"
 );
-
-console.log(leadsData);
 
   const leads = leadsData?.data.data ?? [];
   

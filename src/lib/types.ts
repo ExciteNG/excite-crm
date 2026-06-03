@@ -444,3 +444,20 @@ export type Lead = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type Manager = {
+  id:string;
+  name: {
+    firstname: string;
+    lastname: string;
+    fullname?: string;
+  };
+  email: string;
+  language?: string;
+  country?: string;
+  role: string;
+  status:string;
+  createdAt:Date;
+  updatedAt:Date;
+  isVerified:boolean
+}

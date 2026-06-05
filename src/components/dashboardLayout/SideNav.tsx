@@ -2,11 +2,8 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { deleteCookie } from "cookies-next";
-
 import Logo from "../Logo";
 import { Button } from "../ui/button";
-
 import { sidePortals } from "@/src/lib/contents";
 import { PiSignOutBold } from "react-icons/pi";
 import { useReactMutation } from "@/src/services/apiHelper";
@@ -19,33 +16,29 @@ export default function SideNav() {
 
  const {mutate, isPending}= useReactMutation('post')
 
-
-const handleLogOut = () => {
-  mutate(
-    {
-      path: "/auth/logout",
-      data: "", // if your backend expects something
-    },
-    {
-      onSuccess: () => {
-        // Remove token from cookies
-        deleteCookie("token");
-        toast.success("Logged out successfully");
-        // Redirect to login
-        router.replace("/");
+  const handleLogOut = () => {
+    mutate(
+      {
+        path: "/auth/logout",
+        data: {},
       },
-      onError: (err:unknown) => {
-        if (err instanceof AxiosError) {
-            toast.error("Error", {
-              description: err.response?.data?.message || "Something went wrong",
-            });
-          } else {
-            toast.error("Error", { description: "Something went wrong" });
-          }
+      {
+        onSuccess: () => {
+          router.replace("/");
+          toast("Logged out successfully");
         },
-    }
-  );
-};
+        onError: (err:unknown) => {
+          if (err instanceof AxiosError) {
+              toast.message("Error", {
+                description: err.response?.data?.message || "Something went wrong",
+              });
+            } else {
+              toast.message("Error", { description: "Something went wrong" });
+            }
+          },
+      }
+    );
+  };
 
   return (
     <aside className="sticky top-0 h-screen flex flex-col justify-between items-center bg-secondary py-5">

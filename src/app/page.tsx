@@ -55,9 +55,9 @@ export default function Home() {
     },
     {
       onSuccess: ({ data }) => {
-        toast.success("Success", { description: data?.message });
         setCookie("token", data?.data?.token, { maxAge: 60 * 60 * 24 });
         router.push("/dashboard");
+        toast.message("Success", { description: data?.message });
       },
 
       onError: (err: unknown) => {
